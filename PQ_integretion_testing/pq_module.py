@@ -4,6 +4,8 @@ from datetime import date
 from datetime import datetime
 
 def load_json(log_file):
+    # Function to convert the JSON packets in the log file entries to a list
+    # containing the packets for further processing.
     packets = []
     for line in log_file:
         try:
@@ -58,7 +60,7 @@ def find_request_response(packets, sbs, service):
             rq += 1
         elif packet['Source'] == sbs and packet['Request'] == 'Reply' and (packet['Service'] == service or service == 'all'):
             rp += 1
-    print "Number of requests/responses", rq, "/", rp, "missing", rq - rp, "for", sbs, "and service", service
+    print("Number of requests/responses", rq, "/", rp, "missing", rq - rp, "for", sbs, "and service", service)
 
 # def check_hk_rf(packets, sbs):
 #     packet_resp = []
@@ -69,7 +71,7 @@ def find_request_response(packets, sbs, service):
 #
 #         elif packet['Source'] == 'OBC' and packet['Request'] == 'RF_TX' and packet_resp['SystemID'] == packet['SystemID']:
 #
-#     print "Number of requests", rq, "Number of responses", rp, "for", sbs
+#     print("Number of requests", rq, "Number of responses", rp, "for", sbs)
 
 def cnv_to_timestep_arr(arr):
     dt_list = []
@@ -105,7 +107,7 @@ def find_packets_time_stats(packets, sbs):
     step_list = []
     dt_list = []
 
-    print "For", sbs
+    print("For", sbs)
 
     time_stats, dt = filter_param(packets, sbs, '_timestamp_')
 
@@ -120,18 +122,18 @@ def find_packets_time_stats(packets, sbs):
             step_list.append((time_list[i] - time_list[0]).total_seconds())
             dt_list.append((time_list[i] - time_list[i-1]).total_seconds())
 
-    print "first packet", time_list[0],"last packet", time_list[-1], "Duration", time_list[-1] - time_list[0], "sec", step_list[-1]
+    print("first packet", time_list[0],"last packet", time_list[-1], "Duration", time_list[-1] - time_list[0], "sec", step_list[-1])
 
     arr = np.array(dt_list)
 
-    print "packets time average", np.mean(arr), "standard deviation", np.std(arr), "min", np.min(arr), "max", np.max(arr)
+    print("packets time average", np.mean(arr), "standard deviation", np.std(arr), "min", np.min(arr), "max", np.max(arr))
 
 def find_rf_packets(packets, sbs, sbs_id):
     rf_packets = 0
     for packet in packets:
         if packet['Request'] == 'RF_TX' and int(packet['SystemID']) == sbs_id:
             rf_packets += 1
-    print "RF packets", rf_packets, "in", sbs
+    print("RF packets", rf_packets, "in", sbs)
 
 def find_boot_counter_resets(packets, sbs, debug):
     prev = 0
@@ -144,11 +146,11 @@ def find_boot_counter_resets(packets, sbs, debug):
             prev = res[i]
         elif prev != res[i]:
             if debug == True:
-                print "Reset in:", prev, res[i]
+                print("Reset in:", prev, res[i])
             reset += 1
             prev = res[i]
 
-    print "Resets", reset, "in", sbs
+    print("Resets", reset, "in", sbs)
 
 def find_packet_counter_resets(packets, sbs, debug):
     reset = 0
@@ -157,10 +159,10 @@ def find_packet_counter_resets(packets, sbs, debug):
         if packet['Source'] == sbs:
             if int(packet['Counter']) == 1 and prv != 0 and prv != -1:
                 if debug == True:
-                    print "Reset in", packet['Counter'], prv
+                    print("Reset in", packet['Counter'], prv)
                 reset += 1
             prv = int(packet['Counter'])
-    print "Resets", reset, "in", sbs
+    print("Resets", reset, "in", sbs)
 
 def find_num_packets(packets, sbs):
     num = 0
@@ -184,8 +186,8 @@ def find_lost_packets(packets, sbs, debug):
                 if int(packet['Counter']) - prv != 1:
                     lost += 1
                     if debug == True:
-                        print "lost packet in:", prv, packet['Counter'], packet['_timestamp_']
+                        print("lost packet in:", prv, packet['Counter'], packet['_timestamp_'])
                 prv = int(packet['Counter'])
             cnt += 1
 
-    print "Number of lost packets in", sbs, lost, "/", cnt
+    print("Number of lost packets in", sbs, lost, "/", cnt)

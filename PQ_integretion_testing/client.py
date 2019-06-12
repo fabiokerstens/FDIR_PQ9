@@ -16,7 +16,7 @@ def signal_handler(sig, frame):
     sys.exit(0)
 
 def process_frame(packet):
-    print "Hello from ", packet['Source']
+    print("Hello from ", packet['Source'])
 
 def get_packets():
     global working
@@ -24,25 +24,41 @@ def get_packets():
         pq_class.get_data()
 
 def send_packets():
+    # Function to transmit packets to the LaunchPad
     global working
     while working:
-        pq_class.ping("OBC")
+        # To receive ping commants, uncomment the first line, for Housekeeping
+        # uncomment the second line.
+        #pq_class.ping("DEBUG")
+        pq_class.houskeeping("DEBUG")
         time.sleep(30)
         packets = pq_class.get_packets()
-        #print packets
+        #print(packets)
         if packets:
             for packet in packets:
                 process_frame(packet)
 
+
+# IP-adress of the bus
 TCP_IP = '127.0.0.1'
+
+# Serial por tused by the bus
 TCP_PORT = 10000
+
+# Maximimum size of the buffer (10 bit)
 BUFFER_SIZE = 1024
 
 working = True
 
-fname = sys.argv[1]
+# Define the file directory in which the files are stored. This can be added in
+# manually or via the command window (use sys.argv[1] in this case).
+fname = 'testing.txt'
+#fname = sys.argv[1]
 
-pq_class = pqc.pq(TCP_IP, TCP_PORT, 1, BUFFER_SIZE, fname, 10)
+# Maximum log period in minutes (time between two samples)
+LOGPERIOD = 10
+
+pq_class = pqc.pq(TCP_IP, TCP_PORT, 1, BUFFER_SIZE, fname, LOGPERIOD)
 
 t=threading.Thread(target=get_packets)
 t.start()

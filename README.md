@@ -11,7 +11,7 @@ To setup the system, connect the LaunchPad to the computer via one of the USB po
 cd C:\...\FDIR_PQ9
 ```
 
-where the dots are to be replaced with the repository directory. Next, run the following commands to deploy the EGSE API:
+where the dots are to be replaced with the repository directory. Next, run the following commands to deploy the EGSE API from the JAVA target:
 
 ```
 cd PQ9EGSE
