@@ -31,7 +31,7 @@ def send_packets():
         # uncomment the second line.
         #pq_class.ping("DEBUG")
         pq_class.houskeeping("DEBUG")
-        time.sleep(30)
+        time.sleep(30) # 30 sec. delay
         packets = pq_class.get_packets()
         #print(packets)
         if packets:

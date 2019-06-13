@@ -1,7 +1,7 @@
 import sys
 import pq_module as pq
 
-fname =sys.argv[1]
+fname = 'testing.txt'#sys.argv[1]
 try:
     sys.argv[2]
     debug = True

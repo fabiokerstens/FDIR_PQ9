@@ -3,7 +3,7 @@ import pq_module as pq
 import matplotlib.pyplot as plt
 
 res = []
-fname = sys.argv[1]
+fname = 'testing.txt'#sys.argv[1]
 
 f = open(fname,'r')
 
