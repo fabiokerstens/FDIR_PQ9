@@ -30,7 +30,7 @@ Now, one can open a webbrowser to visit localhost:8080 to visualize the API and 
 ## Packet Configuration
 The DELFI-PQ uses the PQ9 communication protocol, as is displayed in the figure below. The PQ9 protocol sends packets of at least 5 bytes and at most 260 bytes. The protocol is used for both transmitting and receiving data. 
 
-![alt text](https://github.com/fabiokerstens/FDIR_PQ9/tree/master/Figures_README/pq9_protocol.JPG)
+![pq9_protocol](https://github.com/fabiokerstens/FDIR_PQ9/tree/master/Figures_README/pq9_protocol.JPG)
 
 The first byte contains the destination adress, e.g. the OBC or the ADCS subsystem. The second byte indicates the total length of the message in bytes (this is limited between 0-255 bytes based on the 8-bit architecture). The third byte contains the source adress, e.g. the OBC. 
 After the bytes containing the message, the last two bytes are allocated for Cyclic Reduncancy Checking (CRC), which can detect if an error has occured in the packet structure. 
