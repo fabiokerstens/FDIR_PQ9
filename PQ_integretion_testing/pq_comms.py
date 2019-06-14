@@ -86,6 +86,21 @@ class pq:
         print(packet)
         self.s.send(packet + "\n")
 
+	def ftdebug(self, MemAddr, FTOper, Operator):
+		# Function for the bit flipping 
+		print("Flipping")
+		msg = {}
+		msg['_send_'] = 'FTDebug'
+		msg['MemAddr'] = MemAddr
+		msg['FTOper'] = FTOper
+		msg['Operator'] = Operator
+		packet = json.dumps(msg, ensure_ascii=False)
+		print(packet)
+		self.s.send(packet + "\n")
+		
+		
+
+
     def houskeeping(self, destination):
         # Function to get the housekeeping data from the subsystems.
         print("Sending")
