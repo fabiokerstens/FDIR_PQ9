@@ -85,18 +85,18 @@ class pq:
         packet = json.dumps(msg, ensure_ascii=False)
         print(packet)
         self.s.send(packet + "\n")
-
-	def ftdebug(self, MemAddr, FTOper, Operator):
+        
+    def ftdebug(self, MemAddr, FTOper, Operator):
 		# Function for the bit flipping 
-		print("Flipping")
-		msg = {}
-		msg['_send_'] = 'FTDebug'
-		msg['MemAddr'] = MemAddr
-		msg['FTOper'] = FTOper
-		msg['Operator'] = Operator
-		packet = json.dumps(msg, ensure_ascii=False)
-		print(packet)
-		self.s.send(packet + "\n")
+        print("Flipping")
+        msg = {}
+        msg['_send_'] = 'FTDebug'
+        msg['MemAddr'] = MemAddr
+        msg['FTOper'] = FTOper
+        msg['Operator'] = Operator
+        packet = json.dumps(msg, ensure_ascii=False)
+        print(packet)
+        self.s.send(packet + "\n")
 		
 		
 
