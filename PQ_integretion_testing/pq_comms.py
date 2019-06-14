@@ -62,7 +62,7 @@ class pq:
         return data
 
     def get_packets(self):
-        # Instance method to convert the obtained data of get_data to packets . 
+        # Instance method to convert the obtained data of get_data to packets .
         packets = []
         sps = self.data.splitlines(True)
         self.data = ""
@@ -82,12 +82,13 @@ class pq:
         msg = {}
         msg['_send_'] = 'Ping'
         msg['Destination'] = destination
+        print('x',msg)
         packet = json.dumps(msg, ensure_ascii=False)
         print(packet)
         self.s.send(packet + "\n")
-        
+
     def ftdebug(self, MemAddr, FTOper, Operator):
-		# Function for the bit flipping 
+		# Function for the bit flipping
         print("Flipping")
         msg = {}
         msg['_send_'] = 'FTDebug'
@@ -97,8 +98,17 @@ class pq:
         packet = json.dumps(msg, ensure_ascii=False)
         print(packet)
         self.s.send(packet + "\n")
-		
-		
+
+    def ledje(self, onoff):
+		# Function for the bit flipping
+        print("ledje")
+        msg = {}
+        msg['_send_'] = 'DBGLEDcmd'
+        # all parameters are set except the state
+        msg['DBGLED'] = onoff
+        packet = json.dumps(msg, ensure_ascii=False)
+        print(packet)
+        self.s.send(packet + "\n")
 
 
     def houskeeping(self, destination):
