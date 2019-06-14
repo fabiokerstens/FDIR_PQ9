@@ -33,8 +33,10 @@ def send_packets():
         pq_class.ping("DEBUG")
         #pq_class.houskeeping("DEBUG")
 
-        if i > 2:
+        if i == 2:
             pq_class.ftdebug("536874642", "set", "255")
+            time.sleep(1)
+            pq_class.reset("DEBUG")
         time.sleep(5) # 30 sec. delay
         packets = pq_class.get_packets()
         #print(packets)

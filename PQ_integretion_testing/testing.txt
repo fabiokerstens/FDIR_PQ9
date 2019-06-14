@@ -77,3 +77,7 @@
 {"Destination":"OBC","_timestamp_":"Fri Jun 14 14:32:48 CEST 2019","Counter":"4","_raw_":"[1, 4, 7, 0, 4, 17, 2, 228, 26]","Size":"4","Request":"Reply","Service":"Ping","_received_":"PingReply","Source":"DEBUG"}
 {"Destination":"OBC","_timestamp_":"Fri Jun 14 14:32:53 CEST 2019","Counter":"5","_raw_":"[1, 4, 7, 0, 5, 17, 2, 211, 42]","Size":"4","Request":"Reply","Service":"Ping","_received_":"PingReply","Source":"DEBUG"}
 {"Destination":"","_timestamp_":"Fri Jun 14 14:32:53 CEST 2019","Counter":"6","_raw_":"[228, 4, 7, 0, 6, 4, 2, 23, 184]","Size":"4","Request":"Reply","Service":"Ackownledgment","_received_":"ACK_OK_Reply","Source":"DEBUG"}
+{"Destination":"OBC","_timestamp_":"Fri Jun 14 14:58:17 CEST 2019","Counter":"2","_raw_":"[1, 4, 7, 0, 2, 17, 2, 86, 186]","Size":"4","Request":"Reply","Service":"Ping","_received_":"PingReply","Source":"DEBUG"}
+{"Destination":"OBC","_timestamp_":"Fri Jun 14 14:58:22 CEST 2019","Counter":"3","_raw_":"[1, 4, 7, 0, 3, 17, 2, 97, 138]","Size":"4","Request":"Reply","Service":"Ping","_received_":"PingReply","Source":"DEBUG"}
+{"Destination":"OBC","_timestamp_":"Fri Jun 14 14:58:27 CEST 2019","Counter":"4","_raw_":"[1, 4, 7, 0, 4, 17, 2, 228, 26]","Size":"4","Request":"Reply","Service":"Ping","_received_":"PingReply","Source":"DEBUG"}
+{"Destination":"","_timestamp_":"Fri Jun 14 14:58:27 CEST 2019","Counter":"5","_raw_":"[228, 4, 7, 0, 5, 4, 2, 78, 232]","Size":"4","Request":"Reply","Service":"Ackownledgment","_received_":"ACK_OK_Reply","Source":"DEBUG"}

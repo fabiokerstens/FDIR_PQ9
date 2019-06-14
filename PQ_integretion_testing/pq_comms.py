@@ -99,13 +99,23 @@ class pq:
         print(packet)
         self.s.send(packet + "\n")
 
+    def reset(self, destination):
+		# Function for the bit flipping
+        print("Resetting")
+        msg = {}
+        msg['_send_'] = 'Reset'
+        msg['Destination'] = destination
+        packet = json.dumps(msg, ensure_ascii=False)
+        print(packet)
+        self.s.send(packet + "\n")
+
     def ledje(self, onoff):
 		# Function for the bit flipping
         print("ledje")
         msg = {}
         msg['_send_'] = 'DBGLEDcmd'
         # all parameters are set except the state
-        msg['DBGLED'] = onoff
+        msg['DBGLED'] = (onoff)
         packet = json.dumps(msg, ensure_ascii=False)
         print(packet)
         self.s.send(packet + "\n")
