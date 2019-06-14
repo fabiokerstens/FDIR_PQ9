@@ -1,6 +1,6 @@
 # FDIR_PQ9
 
-## Introduction
+## Purpose
 Delft University is currently developing the DELFI-PQ, a 3U pocketcube spacecraft. The DELFI-PQ has to survive the
 space environment througout its mission duration in low Earth orbit. An effect of this environment is radiation, which
 can cause harm to the spacecraft electronics. Large spacecraft often rely on radiation hardened electronics to 
@@ -27,9 +27,9 @@ The DELFI-PQ uses the PQ9 communication protocol, as is displayed in the figure 
 The first byte contains the destination adress, e.g. the OBC or the ADCS subsystem. The second byte indicates the total length of the message in bytes (this is limited between 0-255 bytes based on the 8-bit architecture). The third byte contains the source adress, e.g. the OBC. 
 After the bytes containing the message, the last two bytes are allocated for Cyclic Reduncancy Checking (CRC), which can detect if an error has occured in the packet structure. 
 
+## Design
 
-
-## Running the Simulation  
+## How to Use  
 
 ### Prerequisites
 To run the FDIR code, one requires the MSP432P401R LaunchPad, as well as a USB to micro-USB cable with a computer, running either LINUX or WINDOWS.
@@ -53,6 +53,6 @@ Now, one can open a webbrowser to visit localhost:8080 to visualize the API and 
 
 ## Results
 
-## Conclusion
+## Issues Encountered 
 
 ## Recommendations

@@ -1435,6 +1435,15 @@
                         <xtce:Enumeration label="off" value="0" shortDescription="LED off"/>
                     </xtce:EnumerationList>
                 </xtce:EnumeratedArgumentType>
+                <xtce:EnumeratedArgumentType name="FTOperType">
+                    <xtce:UnitSet/>
+                    <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+                    <xtce:EnumerationList>
+                        <xtce:Enumeration label="toggle" value="2" shortDescription="toggle bit"/>
+                        <xtce:Enumeration label="set" value="1" shortDescription="set bit"/>
+                        <xtce:Enumeration label="clear" value="0" shortDescription="clear bit"/>
+                    </xtce:EnumerationList>
+                </xtce:EnumeratedArgumentType>
             </xtce:ArgumentTypeSet>
             <xtce:MetaCommandSet>
                 <xtce:MetaCommand name="DBGLEDcmd">
@@ -1456,6 +1465,32 @@
                         <xtce:EntryList>
                             <xtce:FixedValueEntry binaryValue="45" sizeInBits="8"/>
                             <xtce:ArgumentRefEntry argumentRef="DBGLED"/>
+                        </xtce:EntryList>
+                    </xtce:CommandContainer>
+                </xtce:MetaCommand>
+                <xtce:MetaCommand name="FTDebug">
+                    <xtce:LongDescription>Bit flip</xtce:LongDescription>
+                    <xtce:BaseMetaCommand metaCommandRef="/Delfi-PQ/PQ9">
+                        <xtce:ArgumentAssignmentList>
+                            <xtce:ArgumentAssignment argumentName="Destination" argumentValue="DEBUG"/>
+                            <xtce:ArgumentAssignment argumentName="Size" argumentValue="6"/>
+                            <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
+                            <xtce:ArgumentAssignment argumentName="Counter" argumentValue="0"/>
+                            <xtce:ArgumentAssignment argumentName="Service" argumentValue="GetSetParam"/>
+                            <xtce:ArgumentAssignment argumentName="Request" argumentValue="Set"/>
+                        </xtce:ArgumentAssignmentList>
+                    </xtce:BaseMetaCommand>
+                    <xtce:ArgumentList>
+                        <xtce:Argument name="MemAddr" argumentTypeRef="/Delfi-PQ/long"/>
+                        <xtce:Argument name="FTOper" argumentTypeRef="FTOperType"/>
+                        <xtce:Argument name="Operator" argumentTypeRef="/Delfi-PQ/byte"/>
+                    </xtce:ArgumentList>
+                    <xtce:CommandContainer name="FTDebug">
+                        <xtce:EntryList>
+                            <xtce:FixedValueEntry binaryValue="46" sizeInBits="8"/>
+                            <xtce:ArgumentRefEntry argumentRef="MemAddr"/>
+                            <xtce:ArgumentRefEntry argumentRef="FTOper"/>
+                            <xtce:ArgumentRefEntry argumentRef="Operator"/>
                         </xtce:EntryList>
                     </xtce:CommandContainer>
                 </xtce:MetaCommand>
