@@ -25,19 +25,22 @@ def get_packets():
 
 def send_packets():
     # Function to transmit packets to the LaunchPad
+    i = 0
     global working
     while working:
         # To receive ping commants, uncomment the first line, for Housekeeping
         # uncomment the second line.
         #pq_class.ping("DEBUG")
+        if i > 1:
+        	pq_class.ftdebug(5368746342, 'set', 255)
         pq_class.houskeeping("DEBUG")
-        time.sleep(30) # 30 sec. delay
+        time.sleep(5) # 30 sec. delay
         packets = pq_class.get_packets()
         #print(packets)
         if packets:
             for packet in packets:
                 process_frame(packet)
-
+	i += 1
 
 # IP-adress of the bus
 TCP_IP = '127.0.0.1'
