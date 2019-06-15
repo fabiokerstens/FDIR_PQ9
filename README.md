@@ -19,7 +19,7 @@ are used in the present work as a reference to build upon.
 
 #### Modelling Single Event Upsets
 
-Single event upsets are soft errors which result from single ionizing particle interacting with the microprocessor hardware. Here, the effects of SEUs in the SRAM shall be considered, which for MSP432 is located in memory address range 0x2000 0000 to 0x2010 0000.  
+Single event upsets are soft errors which result from single ionizing particle interacting with the microprocessor hardware. Here, the effects of SEUs in the SRAM shall be considered, which for MSP432 is located in memory address range 0x2000 0000 to 0x2010 0000. In both the EGSE software and the python files, the memory address must be input in decimal, for which the range is 536,870,912 to  537,9191,488.
 
 #### PQ9 Protocol
 The DELFI-PQ uses the PQ9 communication protocol, as is displayed in the figure below. The PQ9 protocol sends packets of at least 5 bytes and at most 260 bytes. The protocol is used for both transmitting and receiving data. 
@@ -35,7 +35,7 @@ After the bytes containing the message, the last two bytes are allocated for Cyc
 
 #### Prerequisites
 To run the FDIR code, one requires the MSP432P401R LaunchPad, as well as a USB to micro-USB cable with a computer, running either LINUX or WINDOWS.
-In the present work, we use WINDOWS.
+In the presented work, WINDOWS is used, but the same commands can be used for connection via a LINUX terminal.
 
 #### Hardware Setup
 To setup the system, connect the LaunchPad to the computer via one of the USB ports. Open WINDOWS PowerShell in administrator mode and locate the repository:
