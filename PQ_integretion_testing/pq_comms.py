@@ -14,7 +14,7 @@ class pq:
     # -
 
     # Initializer: initial value of all objects in the class.
-    def __init__(self, ip, port, timeout, buffer_size, fname, log_period):
+    def __init__(self, ip, port, timeout, buffer_size, file_name, log_period):
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.s.settimeout(timeout)
         self.s.connect((ip, port))
@@ -22,10 +22,10 @@ class pq:
         self.buffer_size = buffer_size
         self.data = ""
 
-        self.f = open(fname,'a')
+        self.f = open(file_name, 'a')
         self.log_period = log_period
-        self.time_prev=  time.time()
-        self.time_new =  0
+        self.time_prev = time.time()
+        self.time_new = 0
 
     def close(self):
         # Instance method to close the log file and serial communication.
@@ -46,10 +46,10 @@ class pq:
         self.data += data
         self.f.write(data)
 
-        #print "received data:", data
+        # print("received data:", data)
 
         # Add the current time stamp (sec.) to the time_new instance attribute.
-        self.time_new =  time.time()
+        self.time_new = time.time()
 
         # If the the maximum log period is reached, the internal I/O buffer is
         # flushed to save memory, and the instance attribute time_prev is set to
@@ -62,7 +62,7 @@ class pq:
         return data
 
     def get_packets(self):
-        # Instance method to convert the obtained data of get_data to packets . 
+        # Instance method to convert the obtained data of get_data to packets .
         packets = []
         sps = self.data.splitlines(True)
         self.data = ""
@@ -82,11 +82,45 @@ class pq:
         msg = {}
         msg['_send_'] = 'Ping'
         msg['Destination'] = destination
+        print('x',msg)
         packet = json.dumps(msg, ensure_ascii=False)
         print(packet)
         self.s.send(packet + "\n")
 
-    def houskeeping(self, destination):
+    def ftdebug(self, MemAddr, FTOper, Operator):
+        # Function for the bit flipping
+        print("Flipping a bit")
+        msg = {}
+        msg['_send_'] = 'FTDebug'
+        msg['MemAddr'] = MemAddr
+        msg['FTOper'] = FTOper
+        msg['Operator'] = Operator
+        packet = json.dumps(msg, ensure_ascii=False)
+        print(packet)
+        self.s.send(packet + "\n")
+
+    def reset(self, destination):
+        # Function for the bit flipping
+        print("Resetting")
+        msg = {}
+        msg['_send_'] = 'Reset'
+        msg['Destination'] = destination
+        packet = json.dumps(msg, ensure_ascii=False)
+        print(packet)
+        self.s.send(packet + "\n")
+
+    def ledje(self, onoff):
+        # Function for the bit flipping
+        print("ledje")
+        msg = {}
+        msg['_send_'] = 'DBGLEDcmd'
+        # all parameters are set except the state
+        msg['DBGLED'] = (onoff)
+        packet = json.dumps(msg, ensure_ascii=False)
+        print(packet)
+        self.s.send(packet + "\n")
+
+    def housekeeping(self, destination):
         # Function to get the housekeeping data from the subsystems.
         print("Sending")
         msg = {}

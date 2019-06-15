@@ -7,6 +7,9 @@ import pq_comms as pqc
 import time
 import signal
 import sys
+import random
+
+# -------- Functions --------
 
 def signal_handler(sig, frame):
     global working
@@ -15,55 +18,65 @@ def signal_handler(sig, frame):
     pq_class.close()
     sys.exit(0)
 
+
 def process_frame(packet):
     print("Hello from ", packet['Source'])
+
 
 def get_packets():
     global working
     while working:
         pq_class.get_data()
 
+
 def send_packets():
     # Function to transmit packets to the LaunchPad
+    i = 0
     global working
     while working:
-        # To receive ping commants, uncomment the first line, for Housekeeping
-        # uncomment the second line.
-        #pq_class.ping("DEBUG")
-        pq_class.houskeeping("DEBUG")
-        time.sleep(30) # 30 sec. delay
+        # To receive ping comments, uncomment the first line, for Housekeeping uncomment the second line.
+        pq_class.ping("DEBUG")
+        # pq_class.housekeeping("DEBUG")
+
+        if i == 2:
+            # Flipping a bit, all inputs must be strings
+            pq_class.ftdebug("536874642", "set", "255")
+            time.sleep(1)
+            pq_class.reset("DEBUG")
+        time.sleep(5)           # 30 sec. delay
         packets = pq_class.get_packets()
-        #print(packets)
+        # print(packets)
         if packets:
             for packet in packets:
                 process_frame(packet)
+        i += 1
+        print('i=', i)
 
 
-# IP-adress of the bus
-TCP_IP = '127.0.0.1'
+# -------- Inputs ------
+tcp_ip = '127.0.0.1'        # IP-address of the bus
+tcp_port = 10000            # Serial port used by the bus
+buffer_size = 1024          # Maximum size of the buffer (10 bit)
 
-# Serial por tused by the bus
-TCP_PORT = 10000
+working = True              # Initialise the code as working
 
-# Maximimum size of the buffer (10 bit)
-BUFFER_SIZE = 1024
+sram_0 = int("0x20000000", 16)          # SRAM memory address region lower
+sram_1 = int("0x20100000", 16)          # SRAM memory address region upper
 
-working = True
 
-# Define the file directory in which the files are stored. This can be added in
-# manually or via the command window (use sys.argv[1] in this case).
-fname = 'testing.txt'
-#fname = sys.argv[1]
+# Define the file directory in which the files are stored. This can be added in manually or via the command window (use sys.argv[1] in this case).
+file_name = 'testing.txt'
+# file_name = sys.argv[1]
 
 # Maximum log period in minutes (time between two samples)
-LOGPERIOD = 10
+log_period = 10
 
-pq_class = pqc.pq(TCP_IP, TCP_PORT, 1, BUFFER_SIZE, fname, LOGPERIOD)
+pq_class = pqc.pq(tcp_ip, tcp_port, 1, buffer_size, file_name, log_period)
 
-t=threading.Thread(target=get_packets)
+t = threading.Thread(target=get_packets)
 t.start()
 
-t2=threading.Thread(target=send_packets)
+t2 = threading.Thread(target=send_packets)
 t2.start()
 
 signal.signal(signal.SIGINT, signal_handler)
