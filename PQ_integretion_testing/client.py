@@ -9,6 +9,8 @@ import signal
 import sys
 import random
 
+# -------- Functions --------
+
 def signal_handler(sig, frame):
     global working
     working = False
@@ -49,18 +51,18 @@ def send_packets():
                 process_frame(packet)
         i += 1
         print('i=', i)
-   
 
-# IP-address of the bus
-TCP_IP = '127.0.0.1'
 
-# Serial port used by the bus
-TCP_PORT = 10000
+# -------- Inputs ------
+tcp_ip = '127.0.0.1'        # IP-address of the bus
+tcp_port = 10000            # Serial port used by the bus
+buffer_size = 1024          # Maximum size of the buffer (10 bit)
 
-# Maximum size of the buffer (10 bit)
-buffer_size = 1024
+working = True              # Initialise the code as working
 
-working = True
+sram_0 = int("0x20000000", 16)          # SRAM memory address region lower
+sram_1 = int("0x20100000", 16)          # SRAM memory address region upper
+
 
 # Define the file directory in which the files are stored. This can be added in manually or via the command window (use sys.argv[1] in this case).
 file_name = 'testing.txt'
@@ -69,7 +71,7 @@ file_name = 'testing.txt'
 # Maximum log period in minutes (time between two samples)
 log_period = 10
 
-pq_class = pqc.pq(TCP_IP, TCP_PORT, 1, buffer_size, file_name, log_period)
+pq_class = pqc.pq(tcp_ip, tcp_port, 1, buffer_size, file_name, log_period)
 
 t = threading.Thread(target=get_packets)
 t.start()
