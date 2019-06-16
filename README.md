@@ -38,15 +38,51 @@ Here, the effects of SEUs in the SRAM shall be considered, which for MSP432 is l
 range 0x2000 0000 to 0x2010 0000. 
 
 
-### PQ9 Protocol
-The DELFI-PQ uses the PQ9 communication protocol, as is displayed in the figure below. The PQ9 protocol sends packets of at least 5 bytes and at most 260 bytes. The protocol is used for both transmitting and receiving data. 
+### Error Determination
+After errors are introduced in the system, it is of interest if these errors indeed propagate through the system or if
+the FDIR system sucesfully resolves the error. After introducing a SEU in the memory, we distinguish four different 
+errors:
+
+* Corrupted data, corrected by the on-board FDIR (voting etc.). 
+* Corrupted data, not corrected by the on-board FDIR.
+* Freeze of the system, corrected by the on-board FIDR (watchdog timer).
+* Freeze of the system, not corrected by the FDIR. 
+
+Of course, the last state is one we do want to prevent for space missions, as this could potentially mean the loss of 
+the systen, as in this state no communication with the vehicle is possible anymore, without a reset of the software. 
+
+The latter two errors are easy to detect with the SEU algorithm. After a freeze of the system has occured, the board 
+will no long transmit packets and does not respond to software inputs anymore. This can only be resolved by manually 
+pressing the reset button on the board, as no watchdog timer is implemented in the on-board software used in the present
+work. 
+
+However, decting corrupted data is much harder, as this requires a reference to compare the data packets with. For this
+we first need to get a better understanding of the communication protocol used on the DELFI-PQ, the PQ9 protocol. The 
+PQ9 protocol sends data in the form of packets, where the minimum packet length is 5 bytes and the maximum packet length
+is 255 bytes, based on the 8-bit architecture. The first byte contains the receiver to which the packet is sent, 
+the second byte the size of the message transmitted, the third byte contains the transmitter and finally the last two 
+bytes contain a Cyclic Redundancy Check, which is used to verify if errors in the message have occured during tranmission.
+A schematic overview of a packet for the housekeeping debug service is shown below, where the message is highlighted:
 
 <p align="center">
-  <img src="https://github.com/fabiokerstens/FDIR_PQ9/tree/master/Figures_README/pq9_protocol.JPG">
+  <img src="https://github.com/fabiokerstens/FDIR_PQ9/tree/master/Figures_README/debug_packet.PNG">
 </p>
 
-The first byte contains the destination adress, e.g. the OBC or the ADCS subsystem. The second byte indicates the total length of the message in bytes (this is limited between 0-255 bytes based on the 8-bit architecture). The third byte contains the source adress, e.g. the OBC. 
-After the bytes containing the message, the last two bytes are allocated for Cyclic Reduncancy Checking (CRC), which can detect if an error has occured in the packet structure. 
+The message contains the housekeeping information of the particular subsystems of DELFI-PQ. The output in the DEBUG 
+mode is mainly constant, but also consists of some variable bytes (bytes which change over time). The decimal values 
+for the constant bytes when invoking a DEBUG housekeeping request are shown in the figure above. All bytes with a 
+variable value can be computed in PYTHON, and are either integer counters or timer values. Once these variable values
+are computed, they can be used to create a reference message, together with the constant value bytes. This constructed 
+reference message can in term be used to compare against the received message to check for corrupted data errors. 
+
+We assume that during the transmission no errors in the data are introduced, and that the errors that are introduced
+during the tranmission are corrected for by the Cyclic Redundancy Check built in the packet. 
+
+It should be noted that this comparison method works only for simple data packets, such as the DEBUG housekeeping request.
+This is because all variables in the DEBUG subsystem are well predictable. For other subystems, this becomes more tricky
+since the data stored in the packets can be highly variable in time, and non-predictable (e.g. the voltage on a battery
+of the EPS subsystem). 
+
 
 
 
