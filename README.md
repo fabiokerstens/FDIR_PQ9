@@ -82,6 +82,10 @@ In both the EGSE software and the python files, the memory address must be input
 
 ## Results
 
+<p align="center">
+  <img src="https://github.com/fabiokerstens/FDIR_PQ9/blob/master/Figures_README/error_graph.png">
+</p>
+
 ## Issues Encountered 
 When a SEU is sent to some particular memory locations, the microcontroller fully "freezes" and communication with the
 board is no longer possible. This state could only be recovered from by pressing the physical reset button on the board.
