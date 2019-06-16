@@ -69,7 +69,9 @@ java -jar target/PQ9EGSE-0.1-SNAPSHOT-jar-with-dependencies.jar
 Now, one can open a webbrowser to visit localhost:8080 to visualize the API and run commands to the board. 
 
 ### Software Setup
-With the board connected, and the EGSE software running, python can be used to run commands to the board with the client.py file. This can again be done via PowerShell. First the directory must be changed, and then the file called, with the following commands:
+With the board connected, and the EGSE software running, python can be used to run commands to the board with the client.py file. However, first the code must be changed to the directory on your computer. In the folder **PQ_integretion_testing** open the folder **Defaults.py**, and update the directories to match those on your computer. 
+
+After this, **client.py** can be run via PowerShell. First the directory must be changed, and then the file called, with the following commands:
 
 ```
 cd PQ_integretion_testing
