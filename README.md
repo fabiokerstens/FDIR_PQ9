@@ -20,12 +20,20 @@ are used in the present work as a reference to build upon.
 
 
 ### Single Event Upsets
-Single Event Upsets (SEU) are a type of recoverable error (soft errors) in the spacecraft electronics, as a consequence of
-radiation. SEUs occur in all Bipololar, CMOS or BiCMOS technologies, except in EEPROM of flash EEPROM. 
+Single Event Upsets (SEU) are a type of recoverable error (soft errors) which origin from ionizing parcles interacting
+with the spaccraft electronics. SEUs occur in all Bipololar, CMOS or BiCMOS technologies, except in EEPROM or flash 
+EEPROM. In the present work, SEUs are modelled through bitflips in memory cells or registers of the electronics. 
+The Texas Instruments MSP432P401R LaunchPad is used to run the onboard commands of the DELFI-PQ. This board has the 
+following memory allocation:
 
-![GitHub Logo](/Figures_README/memory_allocation.jpg)
-Format: ![Alt Text](url)
+![memory_allocation](https://github.com/fabiokerstens/FDIR_PQ9/tree/master/Figures_README/memory_allocation.jpg)
 
+In the present work we only model SEUs in the SRAM of the board, which located in 0x0100000 up to 0x01100000 (1,048,576 
+up to 17,825,792) and in 0x2000000 up to 0x3FFFFFFF (33,554,432 up to 53,687,091). 
+
+[old range]
+Here, the effects of SEUs in the SRAM shall be considered, which for MSP432 is located in memory address 
+range 0x2000 0000 to 0x2010 0000. 
 
 
 ### PQ9 Protocol
@@ -67,6 +75,10 @@ With the board connected, and the EGSE software running, python can be used to r
 cd PQ_integretion_testing
 python client.py
 ```
+
+In both the EGSE software and the python files, the memory address must be input in decimal, for which the range is 
+536,870,912 to  537,9191,488.
+
 
 ## Results
 
