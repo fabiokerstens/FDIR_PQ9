@@ -8,7 +8,7 @@ class pq:
     # Class containing ....
     # - .s
     # -
-    # - Connect to the bus using the ip adress and serial port.
+    # - Connect to the bus using the IP address and serial port.
     # -
     # -
     # -
@@ -82,7 +82,7 @@ class pq:
         msg = {}
         msg['_send_'] = 'Ping'
         msg['Destination'] = destination
-        print('x',msg)
+        print('x', msg)
         packet = json.dumps(msg, ensure_ascii=False)
         print(packet)
         self.s.send(packet + "\n")

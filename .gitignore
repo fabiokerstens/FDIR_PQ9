@@ -124,3 +124,7 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+/PQ_integretion_testing/
+/PQ_integretion_testing/testing/
+!/PQ_integretion_testing/
+!/PQ_integretion_testing/testing/

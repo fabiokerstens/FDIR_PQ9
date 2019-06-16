@@ -11,6 +11,7 @@ import random
 
 # -------- Functions --------
 
+
 def signal_handler(sig, frame):
     global working
     working = False
