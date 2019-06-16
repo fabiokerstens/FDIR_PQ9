@@ -2,7 +2,7 @@
 
 import threading
 import sys
-import pq_module as pq
+# import pq_module as pq
 import pq_comms as pqc
 import time
 import signal
@@ -20,8 +20,8 @@ def signal_handler(sig, frame):
     sys.exit(0)
 
 
-def process_frame(packet):
-    print("Hello from ", packet['Source'])
+# def process_frame(packet):
+#     print("Hello from ", packet['Source'])
 
 
 def get_packets():
@@ -37,21 +37,41 @@ def send_packets():
     while working:
         # To receive ping comments, uncomment the first line, for Housekeeping uncomment the second line.
         pq_class.ping("DEBUG")
-        # pq_class.housekeeping("DEBUG")
+        print(pq_class.status)
 
-        if i == 2:
-            # Flipping a bit, all inputs must be strings
-            pq_class.ftdebug("536874642", "set", "255")
-            time.sleep(1)
-            pq_class.reset("DEBUG")
-        time.sleep(5)           # 30 sec. delay
+        time.sleep(3)
+        
+        # pq_class.housekeeping("DEBUG")
         packets = pq_class.get_packets()
-        # print(packets)
+
+
+        print(packets)
         if packets:
             for packet in packets:
-                process_frame(packet)
+                # process_frame(packet)
+                print("Hello from ", packet['Source'])
+                # print(packet)
+
+        time.sleep(3)
+
+        if i >= 2:
+            # Flipping a bit, all inputs must be strings
+            # pq_class.ftdebug(str(536874642), "set", "255")
+            memory_address = random.randint(sram_0, sram_1)
+            # memory_address = 536874742
+            pq_class.ftdebug(str(memory_address), "set", "255")
+            print(pq_class.status)
+
+        # packets = pq_class.get_packets()
+        # print(packets)
+        # if packets:
+        #     for packet in packets:
+        #         # process_frame(packet)
+        #         print("Hello from ", packet['Source'])
+        #         # print(packet)
+        # time.sleep(5)
         i += 1
-        print('i=', i)
+        print 'i=', i
 
 
 # -------- Inputs ------

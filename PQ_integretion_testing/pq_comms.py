@@ -26,6 +26,7 @@ class pq:
         self.log_period = log_period
         self.time_prev = time.time()
         self.time_new = 0
+        self.status = " "
 
     def close(self):
         # Instance method to close the log file and serial communication.
@@ -78,18 +79,19 @@ class pq:
     def ping(self, destination):
         # Instance method to ping the one of the destinations at the spacecraft
         # bus.
-        print("Sending")
+        # print("Sending")
+        self.status = "Sending"
         msg = {}
         msg['_send_'] = 'Ping'
         msg['Destination'] = destination
-        print('x', msg)
+        # print('x', msg)
         packet = json.dumps(msg, ensure_ascii=False)
-        print(packet)
+        # print(packet)
         self.s.send(packet + "\n")
 
     def ftdebug(self, MemAddr, FTOper, Operator):
         # Function for the bit flipping
-        print("Flipping a bit")
+        self.status = "Flipping a bit"
         msg = {}
         msg['_send_'] = 'FTDebug'
         msg['MemAddr'] = MemAddr
