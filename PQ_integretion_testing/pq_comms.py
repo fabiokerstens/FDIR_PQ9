@@ -98,7 +98,7 @@ class pq:
         msg['FTOper'] = FTOper
         msg['Operator'] = Operator
         packet = json.dumps(msg, ensure_ascii=False)
-        print(packet)
+        # print(packet)
         self.s.send(packet + "\n")
 
     def reset(self, destination):

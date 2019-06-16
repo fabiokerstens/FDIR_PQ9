@@ -36,6 +36,16 @@ def send_packets():
     global working
     while working:
         # To receive ping comments, uncomment the first line, for Housekeeping uncomment the second line.
+
+        if i >= 2:
+            # Flipping a bit, all inputs must be strings
+            # pq_class.ftdebug(str(536874642), "set", "255")
+            # memory_address = random.randint(sram_0, sram_1)
+            memory_address = random.randint(sram_int-1000, sram_int+1000)
+            # memory_address = 536874742
+            pq_class.ftdebug(str(memory_address), "set", "255")
+            print pq_class.status, "at memory address", memory_address
+
         pq_class.ping("DEBUG")
         print(pq_class.status)
 
@@ -45,22 +55,18 @@ def send_packets():
         packets = pq_class.get_packets()
 
 
-        print(packets)
+        # print(packets)
         if packets:
             for packet in packets:
                 # process_frame(packet)
                 print("Hello from ", packet['Source'])
                 # print(packet)
+        else:
+            print "no packets"
+            working = False
 
         time.sleep(3)
 
-        if i >= 2:
-            # Flipping a bit, all inputs must be strings
-            # pq_class.ftdebug(str(536874642), "set", "255")
-            memory_address = random.randint(sram_0, sram_1)
-            # memory_address = 536874742
-            pq_class.ftdebug(str(memory_address), "set", "255")
-            print(pq_class.status)
 
         # packets = pq_class.get_packets()
         # print(packets)
@@ -83,6 +89,7 @@ working = True              # Initialise the code as working
 
 sram_0 = int("0x20000000", 16)          # SRAM memory address region lower
 sram_1 = int("0x20100000", 16)          # SRAM memory address region upper
+sram_int = 536874642                    # Memory address given by Nikitas
 
 
 # Define the file directory in which the files are stored. This can be added in manually or via the command window (use sys.argv[1] in this case).
