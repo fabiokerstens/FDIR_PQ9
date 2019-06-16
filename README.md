@@ -26,7 +26,9 @@ EEPROM. In the present work, SEUs are modelled through bitflips in memory cells 
 The Texas Instruments MSP432P401R LaunchPad is used to run the onboard commands of the DELFI-PQ. This board has the 
 following memory allocation:
 
-![memory_allocation](https://github.com/fabiokerstens/FDIR_PQ9/tree/master/Figures_README/memory_allocation.jpg)
+<p align="center">
+  <img src="https://github.com/fabiokerstens/FDIR_PQ9/tree/master/Figures_README/memory_allocation.JPG">
+</p>
 
 In the present work we only model SEUs in the SRAM of the board, which located in 0x0100000 up to 0x01100000 (1,048,576 
 up to 17,825,792) and in 0x2000000 up to 0x3FFFFFFF (33,554,432 up to 53,687,091). 
@@ -39,7 +41,9 @@ range 0x2000 0000 to 0x2010 0000.
 ### PQ9 Protocol
 The DELFI-PQ uses the PQ9 communication protocol, as is displayed in the figure below. The PQ9 protocol sends packets of at least 5 bytes and at most 260 bytes. The protocol is used for both transmitting and receiving data. 
 
-![pq9_protocol](https://github.com/fabiokerstens/FDIR_PQ9/tree/master/Figures_README/pq9_protocol.JPG)
+<p align="center">
+  <img src="https://github.com/fabiokerstens/FDIR_PQ9/tree/master/Figures_README/pq9_protocol.JPG">
+</p>
 
 The first byte contains the destination adress, e.g. the OBC or the ADCS subsystem. The second byte indicates the total length of the message in bytes (this is limited between 0-255 bytes based on the 8-bit architecture). The third byte contains the source adress, e.g. the OBC. 
 After the bytes containing the message, the last two bytes are allocated for Cyclic Reduncancy Checking (CRC), which can detect if an error has occured in the packet structure. 
