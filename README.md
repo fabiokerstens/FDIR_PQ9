@@ -5,23 +5,30 @@ Delft University is currently developing the DELFI-PQ, a 3U pocketcube spacecraf
 space environment througout its mission duration in low Earth orbit. An effect of this environment is radiation, which
 can cause harm to the spacecraft electronics. Large spacecraft often rely on radiation hardened electronics to 
 mitigate this risk, at the cost of significantly increasing the mission cost. Most micro and pico spacecraft like the 
-DELFI-PQ rely on commercial-off-the-shelve electronics and sensors, to make the project more affordable. Therefore, in
-the present work a open-source simulation platform is build to simulate Single Event Upsets (SEU) due to radiation.
+DELFI-PQ rely on commercial-off-the-shelve electronics and sensors, to make the project more affordable. 
 
+Therefore, the purpose of this repository is to present a hardware-in-the-loop simulation which can introduce Single 
+Event Upsets (SEU) in the memory, in order to validate the correct function of the FDIR on the spacecraft electronics
+on Earth. 
+
+
+## Design
 Although work has already been done on this in the past, what is new to this repository is that it includes the DELFI-PQ
 PQ9 communication protocol for the simulation of SEUs. Earlier iterations of the SEU simulation tool, such as 
 [Delfi-PQ_FDIR](https://github.com/JochimM/Delfi-PQ_FDIR) and [Delfi-PQ_FDIR_Evaluator](https://github.com/FlyOHolic/Delfi-PQ_FDIR_Evaluator), 
 are used in the present work as a reference to build upon. 
 
 
-## Background Information
+### Single Event Upsets
+Single Event Upsets (SEU) are a type of recoverable error (soft errors) in the spacecraft electronics, as a consequence of
+radiation. SEUs occur in all Bipololar, CMOS or BiCMOS technologies, except in EEPROM of flash EEPROM. 
+
+![GitHub Logo](/Figures_README/memory_allocation.jpg)
+Format: ![Alt Text](url)
 
 
-#### Modelling Single Event Upsets
 
-Single event upsets are soft errors which result from single ionizing particle interacting with the microprocessor hardware. Here, the effects of SEUs in the SRAM shall be considered, which for MSP432 is located in memory address range 0x2000 0000 to 0x2010 0000. In both the EGSE software and the python files, the memory address must be input in decimal, for which the range is 536,870,912 to  537,9191,488.
-
-#### PQ9 Protocol
+### PQ9 Protocol
 The DELFI-PQ uses the PQ9 communication protocol, as is displayed in the figure below. The PQ9 protocol sends packets of at least 5 bytes and at most 260 bytes. The protocol is used for both transmitting and receiving data. 
 
 ![pq9_protocol](https://github.com/fabiokerstens/FDIR_PQ9/tree/master/Figures_README/pq9_protocol.JPG)
@@ -33,11 +40,11 @@ After the bytes containing the message, the last two bytes are allocated for Cyc
 
 ## How to Use  
 
-#### Prerequisites
+### Prerequisites
 To run the FDIR code, one requires the MSP432P401R LaunchPad, as well as a USB to micro-USB cable with a computer, running either LINUX or WINDOWS.
 In the presented work, WINDOWS is used, but the same commands can be used for connection via a LINUX terminal.
 
-#### Hardware Setup
+### Hardware Setup
 To setup the system, connect the LaunchPad to the computer via one of the USB ports. Open WINDOWS PowerShell in administrator mode and locate the repository:
 
 ```
@@ -53,7 +60,7 @@ java -jar target/PQ9EGSE-0.1-SNAPSHOT-jar-with-dependencies.jar
 
 Now, one can open a webbrowser to visit localhost:8080 to visualize the API and run commands to the board. 
 
-#### Software Setup
+### Software Setup
 With the board connected, and the EGSE software running, python can be used to run commands to the board with the client.py file. This can again be done via PowerShell. First the directory must be changed, and then the file called, with the following commands:
 
 ```
@@ -61,10 +68,13 @@ cd PQ_integretion_testing
 python client.py
 ```
 
-## Design
-
 ## Results
 
 ## Issues Encountered 
+When a SEU is sent to some particular memory locations, the microcontroller fully "freezes" and communication with the
+board is no longer possible. This state could only be recovered from by pressing the physical reset button on the board.
+However, this is not practical in reality if one wants to test the full memory spectrum. Therefore, it is recommended
+to implement a watchdog timer on the board to let it reset by itself if no response is detected. 
+
 
 ## Recommendations
