@@ -124,10 +124,10 @@ class pq:
 
     def housekeeping(self, destination):
         # Function to get the housekeeping data from the subsystems.
-        print("Sending")
+        self.status = "Sending"
         msg = {}
         msg['_send_'] = 'GetTelemetry'
         msg['Destination'] = destination
         packet = json.dumps(msg, ensure_ascii=False)
-        print(packet)
+        # print(packet)
         self.s.send(packet + "\n")
