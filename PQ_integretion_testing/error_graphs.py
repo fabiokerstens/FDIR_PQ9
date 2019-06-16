@@ -3,6 +3,7 @@
 import json
 import matplotlib.pyplot as plt
 import numpy as np
+from PQ_integretion_testing.Defaults import json_bad, json_good
 
 plt.xlabel('Memory address')
 plt.ylabel('Error')
@@ -14,8 +15,7 @@ plt.ylim(top = 1.5)
 # json_bad = r"/home/katy/FDIR_PQ9/PQ_integretion_testing/bad_addresses.json".replace('\\', '/')
 # json_good = r"/home/katy/FDIR_PQ9/PQ_integretion_testing/good_addresses.json".replace('\\', '/')
 
-json_bad = r"C:\Users\Katy\Documents\Masters\Q3 Microsat Engineering\FDIR_PQ9\PQ_integretion_testing/bad_addresses.json".replace('\\', '/')
-json_good = r"C:\Users\Katy\Documents\Masters\Q3 Microsat Engineering\FDIR_PQ9\PQ_integretion_testing/good_addresses.json".replace('\\', '/')
+
 
 bad_addresses = json.load(open(json_bad.replace('\\', '/')))
 good_addresses = json.load(open(json_good.replace('\\', '/')))
