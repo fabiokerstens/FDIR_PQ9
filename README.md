@@ -1,20 +1,16 @@
 # FDIR_PQ9
 
 ## Purpose
-Delft University is currently developing the DELFI-PQ, a 3U pocketcube spacecraft. The DELFI-PQ has to survive the
-space environment througout its mission duration in low Earth orbit. An effect of this environment is radiation, which
-can cause harm to the spacecraft electronics. Large spacecraft often rely on radiation hardened electronics to 
-mitigate this risk, at the cost of significantly increasing the mission cost. Most micro and pico spacecraft like the 
-DELFI-PQ rely on commercial-off-the-shelve electronics and sensors, to make the project more affordable. 
+Delft University of Technology is currently developing the [Delfi-PQ](https://www.tudelft.nl/lr/subsites/delfi-space/delfi-pq/), a 3U pocketcube spacecraft, expected to launch in 2019. Throughout its mission, Delfi-PQ will be in a severe radiation environment in low Earth orbit, which could potentially harm the spacecraft electronics. The radiation effect focussed on in the present work is the Single Event Upset (SEU), which origins from ionizing parcles interacting with the spaccraft electronics. The SEU is a soft error (recoverable) with unpredictable consequences. One of the consequences of SEUs are changes in memory locations, which could result in retrieving incorrect housekeeping data from the spacecraft. 
 
-Therefore, the purpose of this repository is to present a hardware-in-the-loop simulation which can introduce Single 
-Event Upsets (SEU) in the memory, in order to validate the correct function of the FDIR on the spacecraft electronics
-on Earth. 
+Clearly SEUs should be corrected for, which is normally done by an on-board Fault Detection, Isolation and Recovery (FDIR) algorithm. FDIR algorithms are vital for the correct in-orbit operation of the Delfi-PQ and hence shall be tested extensively on Earth to validate correct function. For large spacecraft, this is often done by using radiation hardened electronics or by testing the flight computer in a radiation environment. Both these options add a lot of cost to the overal mission, which is often not possible for small spacecraft, such as Delfi-PQ. Therefore, **the purpose of this repository is to simulate SEUs by means of real time fault injection, in an attempt to validate the Delfi-PQ FDIR algorithm**. 
+
+The repository is made open-source and allows students from all over the world to contribute to the project. 
 
 
 ## Design
 Although work has already been done on this in the past, what is new to this repository is that it includes the DELFI-PQ
-PQ9 communication protocol for the simulation of SEUs. Earlier iterations of the SEU simulation tool, such as 
+PQ9 communication protocol for the simulation of SEUs. For more information regarding the PQ9 protocol used, the reader is refered to the [PQ9 and CS14 interface standard](https://dataverse.nl/dataset.xhtml?persistentId=hdl:10411/3V8RUF). Earlier iterations of the SEU simulation tool, such as 
 [Delfi-PQ_FDIR](https://github.com/JochimM/Delfi-PQ_FDIR) and [Delfi-PQ_FDIR_Evaluator](https://github.com/FlyOHolic/Delfi-PQ_FDIR_Evaluator), 
 are used in the present work as a reference to build upon. 
 
@@ -127,7 +123,7 @@ localhost:8080
 This will bring you to the EGSE GUI, as shown in the picture below. In the header, define the serial port used by the FLATSAT (COM7 in the figure). Note that one of the ports if for serial communication, and the other only for programming. 
 
 <p align="center">
-  <img src="https://github.com/fabiokerstens/FDIR_PQ9/tree/master/Figures_README/egse.gui.png">
+  <img src="Figures_README/egse_gui.png">
 </p>
 
 One can test if a sucesfull connection is obtained by sending a ping to **DEBUG**. In the DataLog on the left side of the screen, a transmitted message should now prompt in yellow, as well as a received message in black. 
