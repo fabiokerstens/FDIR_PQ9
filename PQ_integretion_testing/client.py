@@ -81,7 +81,7 @@ def send_packets():
             # memory_address = 536874742
             # memory_address = 536874642
 
-            pq_class.ftdebug(str(memory_address), "set", "255")
+            pq_class.ftdebug("DEBUG", str(memory_address), "set", "255")
             print pq_class.status, "at memory address", memory_address
             counter_sent += 1
 
