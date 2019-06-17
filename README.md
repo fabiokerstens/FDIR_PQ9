@@ -39,6 +39,12 @@ up to 17,825,792) and in 0x2000000 up to 0x3FFFFFFF (33,554,432 up to 53,687,091
 Here, the effects of SEUs in the SRAM shall be considered, which for MSP432 is located in memory address 
 range 0x2000 0000 to 0x2010 0000. 
 
+<p align="center">
+  <img src="Figures_README/bitwise_operation.PNG" width="600">
+</p>
+
+
+
 
 ### Error Determination
 After errors are introduced in the system, it is of interest if these errors indeed propagate through the system or if
