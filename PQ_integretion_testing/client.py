@@ -8,7 +8,11 @@ import time
 import signal
 import sys
 import random
-from PQ_integretion_testing.Defaults import json_bad, json_good
+# from PQ_integretion_testing.Defaults import json_bad, json_good
+from Defaults import json_no_errors, json_data_errors, json_missing_packets
+from error_checking import housekeeping_check
+
+
 
 # -------- Functions --------
 
@@ -33,17 +37,30 @@ def get_packets():
 
 def send_packets():
     # Function to transmit packets to the LaunchPad
+    print "--------------------------"
+    print "Ensure board reset pressed"
+    print "-------------------------- \n"
+    time.sleep(3)
+
+
+    try:
+        missing_packets = json.load(open(json_missing_packets.replace('\\', '/')))
+    except:
+        missing_packets = []
+
+    try:
+        data_errors = json.load(open(json_data_errors.replace('\\', '/')))
+    except:
+        data_errors = []
+
+    try:
+        no_errors = json.load(open(json_no_errors.replace('\\', '/')))
+    except:
+        no_errors = []
+
     i = 0
-
-    try:
-        bad_addresses = json.load(open(json_bad.replace('\\', '/')))
-    except:
-        bad_addresses = []
-
-    try:
-        good_addresses = json.load(open(json_good.replace('\\', '/')))
-    except:
-        good_addresses = []
+    counter_sent = 0
+    boot_counter = -1
     memory_address = 0
 
     global working
@@ -52,23 +69,28 @@ def send_packets():
 
         if i >= 2:
             # Flipping a bit, all inputs must be strings
-            # pq_class.ftdebug(str(536874642), "set", "255")
-            # memory_address = random.randint(sram_0, sram_1)
 
+            memory_address = random.randint(sram_0, sram_1)
+            while memory_address in missing_packets or memory_address in no_errors or memory_address in data_errors:
+                memory_address = random.randint(sram_0, sram_1)
 
-            memory_address = random.randint(sram_int-1000, sram_int+1000)
-            while memory_address in bad_addresses or memory_address in good_addresses:
-                memory_address = random.randint(sram_int - 1000, sram_int + 1000)
+            # memory_address = random.randint(sram_int-1000, sram_int+1000)
+            # while memory_address in missing_packets or memory_address in no_errors or memory_address in data_errors:
+            #     memory_address = random.randint(sram_int - 1000, sram_int + 1000)
 
             # memory_address = 536874742
             # memory_address = 536874642
 
-            pq_class.ftdebug(str(memory_address), "set", "255")
+            pq_class.ftdebug("DEBUG", str(memory_address), "set", "255")
             print pq_class.status, "at memory address", memory_address
+            counter_sent += 1
 
+        time.sleep(2)
         # pq_class.ping("DEBUG")
         pq_class.housekeeping("DEBUG")
         print(pq_class.status)
+        counter_sent += 1
+        boot_counter += 1
 
         time.sleep(2)
 
@@ -77,26 +99,42 @@ def send_packets():
 
         # print(packets)
         if packets:
-            for packet in packets:
-                # process_frame(packet)
-                print("Hello from ", packet['Source'])
-                # print(packet)
-                if i>=2 and memory_address not in good_addresses:
-                    good_addresses.append(memory_address)
-                    print len(good_addresses), "good addresses"
-                    with open(json_good, 'w') as fout:
-                        json.dump(good_addresses, fout)
+            if packets[-1]['Counter'] != str(counter_sent):
+                print
+                print "Packet missing "
+
+                missing_packets.append(memory_address)
+                with open(json_missing_packets, 'w') as fout:
+                    json.dump(missing_packets, fout)
+
+                time.sleep(2)
+                print "\n reset board"
+                time.sleep(2)
+                boot_counter = -1
+                counter_sent = 0
+
+            else:
+                for packet in packets:
+                    print("Hello from ", packet['Source'])
+                    if packet['Service'] == 'Housekeeping':
+                        check = housekeeping_check(packet, boot_counter)
+                        if check is True and i>=2:
+                            no_errors.append(memory_address)
+
+                            with open(json_no_errors, 'w') as fout:
+                                json.dump(no_errors, fout)
+
+                        if check is False and i>=2:
+                            data_errors.append(memory_address)
+                            with open(json_data_errors, 'w') as fout:
+                                json.dump(data_errors, fout)
         else:
-            print "no packets"
-            # working = False
-            if memory_address not in bad_addresses:
-                bad_addresses.append(memory_address)
-                print len(bad_addresses), "bad addresses"
-                with open(json_bad, 'w') as fout:
-                    json.dump(bad_addresses, fout)
+            print "no packets \n"
             time.sleep(2)
-            print "\n reset board"
-            time.sleep(2)
+            print "reset board"
+            boot_counter = -1
+            counter_sent = 0
+            time.sleep(3)
         time.sleep(1)
 
 
@@ -109,7 +147,8 @@ def send_packets():
         #         # print(packet)
         # time.sleep(5)
         i += 1
-        print 'i=', i
+        # print "Total counter is", counter_sent, "and Boot Counter is", boot_counter
+        print
 
 
 # -------- Inputs ------

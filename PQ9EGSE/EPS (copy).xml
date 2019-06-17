@@ -1472,6 +1472,7 @@
                     <xtce:LongDescription>Bit flip</xtce:LongDescription>
                     <xtce:BaseMetaCommand metaCommandRef="/Delfi-PQ/PQ9">
                         <xtce:ArgumentAssignmentList>
+                            <xtce:ArgumentAssignment argumentName="Destination" argumentValue="DEBUG"/>
                             <xtce:ArgumentAssignment argumentName="Size" argumentValue="6"/>
                             <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
                             <xtce:ArgumentAssignment argumentName="Counter" argumentValue="0"/>

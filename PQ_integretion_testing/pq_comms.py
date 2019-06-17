@@ -80,7 +80,8 @@ class pq:
         # Instance method to ping the one of the destinations at the spacecraft
         # bus.
         # print("Sending")
-        self.status = "Sending"
+        self.status = "Sending ping"
+        print "sending ping"
         msg = {}
         msg['_send_'] = 'Ping'
         msg['Destination'] = destination
@@ -89,11 +90,12 @@ class pq:
         # print(packet)
         self.s.send(packet + "\n")
 
-    def ftdebug(self, MemAddr, FTOper, Operator):
+    def ftdebug(self, destination, MemAddr, FTOper, Operator):
         # Function for the bit flipping
         self.status = "Flipping a bit"
         msg = {}
         msg['_send_'] = 'FTDebug'
+        msg['Destination'] = destination
         msg['MemAddr'] = MemAddr
         msg['FTOper'] = FTOper
         msg['Operator'] = Operator
@@ -124,10 +126,20 @@ class pq:
 
     def housekeeping(self, destination):
         # Function to get the housekeeping data from the subsystems.
-        self.status = "Sending"
+        self.status = "Sending housekeeping"
         msg = {}
         msg['_send_'] = 'GetTelemetry'
         msg['Destination'] = destination
         packet = json.dumps(msg, ensure_ascii=False)
         # print(packet)
+        self.s.send(packet + "\n")
+
+    def eps_bus_sw(self, eps_param, state):
+        # Command for controlling the power bus
+        self.status = "EPS power bus sending"
+        msg = {}
+        msg['_send_'] = 'EPSBusSW'
+        msg['EPSParam'] = eps_param
+        msg['state'] = state
+        packet = json.dumps(msg, ensure_ascii=False)
         self.s.send(packet + "\n")

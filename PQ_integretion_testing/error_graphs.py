@@ -3,12 +3,12 @@
 import json
 import matplotlib.pyplot as plt
 import numpy as np
-from PQ_integretion_testing.Defaults import json_bad, json_good
+from Defaults import json_missing_packets, json_data_errors, json_no_errors
 
 plt.xlabel('Memory address')
 plt.ylabel('Error')
 plt.ylim(bottom = -0.5)
-plt.ylim(top = 1.5)
+plt.ylim(top = 2.5)
 
 
 
@@ -17,12 +17,14 @@ plt.ylim(top = 1.5)
 
 
 
-bad_addresses = json.load(open(json_bad.replace('\\', '/')))
-good_addresses = json.load(open(json_good.replace('\\', '/')))
+no_errors = json.load(open(json_no_errors.replace('\\', '/')))
+data_errors = json.load(open(json_data_errors.replace('\\', '/')))
+missing_packets = json.load(open(json_missing_packets.replace('\\', '/')))
 
 
-plt.scatter(bad_addresses, np.ones(len(bad_addresses)), c='r', s=4)
-plt.scatter(good_addresses, np.zeros(len(good_addresses)), c='b', s=4)
+plt.scatter(data_errors, np.ones(len(data_errorss)), c='k', s=4)
+plt.scatter(no_errors, np.zeros(len(no_errors)), c='b', s=4)
+plt.scatter(missing_packets, 2*np.ones(len(missing_packets)), c='r', s=4)
 
 # for i in len(good_addresses):
 #     plt.scatter(bad_addresses[i], 0, c='r', s=4)
