@@ -125,8 +125,6 @@ dmypy.json
 .pyre/
 
 .idea
+/PQ_integretion_testing/.idea
 
-/PQ_integretion_testing/
-/PQ_integretion_testing/testing/
-!/PQ_integretion_testing/
-!/PQ_integretion_testing/testing/
+
