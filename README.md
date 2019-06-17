@@ -44,6 +44,12 @@ range 0x2000 0000 to 0x2010 0000.
 </p>
 
 
+A Cyclic Redundancy Check is implemented in the PQ9 communication protocol to account for errors during data transfer. When an error during data transfer occur, the EGSE application programming interface automatically rejects the packet. Hence, when running the **client.py**, no packet will show up. To counteract this, a housekeeping loop is implemented, called, which transmist a housekeeping request op to three times when no packet is received. The flowchart used for this is shown below:
+
+<p align="center">
+  <img src="Figures_README/flowchart.PNG" width="600">
+</p>
+
 
 
 ### Error Determination
@@ -113,6 +119,13 @@ Testing of the FDIR of the different subsystems on-board of Delfi-PQ can be done
 First, the user can select the subsystems to test the FDIR from, by attaching different Delfi-PQ subsystems to to FLATSAT. Communication is done via the RS-485 serial interface. The FLATSAT is a developer board used to connect the Delfi-PQ subsystems to the computer for validation testing. In the present work, the Texas Instruments LaunchPad is used as the FLATSAT interface. Commnication with the computer is done via USB serial. 
 
 On the computer one uses the EGSE application programing interface to transmit and receive data to the Delfi-PQ, via the FLATSAT. Outside the the EGSE GUI, in which the user can commmunicate the Delfi-PQ with in GUI inveronment, the user can also use Python to communicate with Delfi-PQ. The latter gives more flexibility in the testing software that can be used, since the EGSE GUI has limited testing options available. 
+
+For the real subsystem, the FLATSAT is used instead, with the ADB subsystem. This setup connected is shown in the figure below. 
+
+<p align="center">
+  <img src="Figures_README/hardware_overview.PNG">
+</p>
+
 
 
 ### Software Setup
