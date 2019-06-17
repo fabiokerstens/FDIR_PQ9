@@ -47,7 +47,7 @@ range 0x2000 0000 to 0x2010 0000.
 A Cyclic Redundancy Check is implemented in the PQ9 communication protocol to account for errors during data transfer. When an error during data transfer occur, the EGSE application programming interface automatically rejects the packet. Hence, when running the **client.py**, no packet will show up. To counteract this, a housekeeping loop is implemented, called, which transmist a housekeeping request op to three times when no packet is received. The flowchart used for this is shown below:
 
 <p align="center">
-  <img src="Figures_README/flowchart.PNG" width="600">
+  <img src="Figures_README/flowchart.png" width="600">
 </p>
 
 
