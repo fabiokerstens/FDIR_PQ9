@@ -1,7 +1,7 @@
 # FDIR_PQ9
 
 ## Purpose
-Delft University of Technology is currently developing the [Delfi-PQ](https://www.tudelft.nl/lr/subsites/delfi-space/delfi-pq/), a 3U pocketcube spacecraft, expected to launch in 2019. Throughout its mission, Delfi-PQ will be in a severe radiation environment in low Earth orbit, which could potentially harm the spacecraft electronics. The radiation effect focussed on in the present work is the Single Event Upset (SEU), which origins from ionizing parcles interacting with the spaccraft electronics. The SEU is a soft error (recoverable) with unpredictable consequences. One of the consequences of SEUs are changes in memory locations, which could result in retrieving incorrect housekeeping data from the spacecraft. 
+Delft University of Technology is currently developing the [Delfi-PQ](https://www.tudelft.nl/lr/subsites/delfi-space/delfi-pq/), a 3U PocketCube spacecraft, expected to launch in 2019. Throughout its mission, Delfi-PQ will be in a severe radiation environment in low Earth orbit, which could potentially harm the spacecraft electronics. The radiation effect focussed on in the present work is the Single Event Upset (SEU), which origins from ionizing parcles interacting with the spaccraft electronics. The SEU is a soft error (recoverable) with unpredictable consequences. One of the consequences of SEUs are changes in memory locations, which could result in retrieving incorrect housekeeping data from the spacecraft. 
 
 Clearly SEUs should be corrected for, which is normally done by an on-board Fault Detection, Isolation and Recovery (FDIR) algorithm. FDIR algorithms are vital for the correct in-orbit operation of the Delfi-PQ and hence shall be tested extensively on Earth to validate correct function. For large spacecraft, this is often done by using radiation hardened electronics or by testing the flight computer in a radiation environment. Both these options add a lot of cost to the overal mission, which is often not possible for small spacecraft, such as Delfi-PQ. Therefore, **the purpose of this repository is to simulate SEUs by means of real time fault injection, in an attempt to validate the Delfi-PQ FDIR algorithm**. 
 
@@ -9,10 +9,16 @@ The repository is made open-source and allows students from all over the world t
 
 
 ## Design
+### Literature Overiew
+In the past, several attempet were already made on developing to develop a FDIR validation simulation, which have been used throughout this work as a reference. Firstly, [Delfi-PQ_FDIR](https://github.com/JochimM/Delfi-PQ_FDIR), uses an Arduino to simulate the spacecraft. Errors are only injected in the SRAM memory and communication is done via standard USB serial. Error checking is done by asking housekeeping data, which contains the names of the authors as well as the borwein pi approximation. Since both housekeeping parameters are fixed and can be well modelled, the authors can check for errors in the received data. Their simulations oututs a memory map of the memory loction and specific bits in which soft errors (wrong housekeeping data) and hard errors (Arduino crash) occur. For further iterations of the software, they recommend ...... **WRITE WHAT WE IMPLEMENTED**
+
+Another attempt was made in the [Delfi-PQ_FDIR_Evaluator](https://github.com/FlyOHolic/Delfi-PQ_FDIR_Evaluator), 
+
+
+
 Although work has already been done on this in the past, what is new to this repository is that it includes the DELFI-PQ
 PQ9 communication protocol for the simulation of SEUs. For more information regarding the PQ9 protocol used, the reader is refered to the [PQ9 and CS14 interface standard](https://dataverse.nl/dataset.xhtml?persistentId=hdl:10411/3V8RUF). Earlier iterations of the SEU simulation tool, such as 
-[Delfi-PQ_FDIR](https://github.com/JochimM/Delfi-PQ_FDIR) and [Delfi-PQ_FDIR_Evaluator](https://github.com/FlyOHolic/Delfi-PQ_FDIR_Evaluator), 
-are used in the present work as a reference to build upon. 
+
 
 
 ### Single Event Upsets
