@@ -8,7 +8,8 @@ import time
 import signal
 import sys
 import random
-from PQ_integretion_testing.Defaults import json_bad, json_good
+# from PQ_integretion_testing.Defaults import json_bad, json_good
+from Defaults import json_bad, json_good
 
 # -------- Functions --------
 
@@ -33,8 +34,13 @@ def get_packets():
 
 def send_packets():
     # Function to transmit packets to the LaunchPad
+    print "--------------------------"
+    print "Ensure board reset pressed"
+    print "-------------------------- \n"
+    time.sleep(3)
     i = 0
-
+    counter_sent = 0
+    boot_counter = -1
     try:
         bad_addresses = json.load(open(json_bad.replace('\\', '/')))
     except:
@@ -65,10 +71,14 @@ def send_packets():
 
             pq_class.ftdebug(str(memory_address), "set", "255")
             print pq_class.status, "at memory address", memory_address
+            counter_sent += 1
 
+        time.sleep(2)
         # pq_class.ping("DEBUG")
         pq_class.housekeeping("DEBUG")
         print(pq_class.status)
+        counter_sent += 1
+        boot_counter += 1
 
         time.sleep(2)
 
@@ -80,20 +90,27 @@ def send_packets():
             for packet in packets:
                 # process_frame(packet)
                 print("Hello from ", packet['Source'])
-                # print(packet)
-                if i>=2 and memory_address not in good_addresses:
-                    good_addresses.append(memory_address)
-                    print len(good_addresses), "good addresses"
-                    with open(json_good, 'w') as fout:
-                        json.dump(good_addresses, fout)
+                if packet['Service'] == 'Housekeeping':
+                    print hex(int(packet['testing2'])), hex(int(packet['testing4'])), "Counter:", packet['Counter'], \
+                          "Boot counter", packet['BootCounter']
+                # if i>=2 and memory_address not in good_addresses:
+                #     good_addresses.append(memory_address)
+                #     print len(good_addresses), "good addresses"
+                #     with open(json_good, 'w') as fout:
+                #         json.dump(good_addresses, fout)
+
+                if packets[-1]['Counter'] != str(counter_sent):
+                    print
+                    print "Packet missing "
+                    time.sleep(1)
         else:
             print "no packets"
             # working = False
-            if memory_address not in bad_addresses:
-                bad_addresses.append(memory_address)
-                print len(bad_addresses), "bad addresses"
-                with open(json_bad, 'w') as fout:
-                    json.dump(bad_addresses, fout)
+            # if memory_address not in bad_addresses:
+                # bad_addresses.append(memory_address)
+                # print len(bad_addresses), "bad addresses"
+                # with open(json_bad, 'w') as fout:
+                #     json.dump(bad_addresses, fout)
             time.sleep(2)
             print "\n reset board"
             time.sleep(2)
@@ -109,7 +126,8 @@ def send_packets():
         #         # print(packet)
         # time.sleep(5)
         i += 1
-        print 'i=', i
+        # print "Total counter is", counter_sent, "and Boot Counter is", boot_counter
+        print
 
 
 # -------- Inputs ------

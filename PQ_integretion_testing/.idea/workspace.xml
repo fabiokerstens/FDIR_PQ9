@@ -10,25 +10,14 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/client.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="51">
-              <caret line="24" lean-forward="true" selection-start-line="24" selection-end-line="24" />
+            <state relative-caret-position="-612">
+              <caret line="64" column="54" selection-start-line="64" selection-start-column="54" selection-end-line="64" selection-end-column="54" />
               <folding>
                 <element signature="e#23#39#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/error_graphs.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="102">
-              <caret line="6" column="19" selection-start-line="6" selection-start-column="19" selection-end-line="6" selection-end-column="19" />
-              <folding>
-                <element signature="e#16#27#0" expanded="true" />
+                <marker date="1560761638089" expanded="true" signature="2269:2503" ph="..." />
               </folding>
             </state>
           </provider>
@@ -38,7 +27,7 @@
         <entry file="file://$PROJECT_DIR$/bad_addresses.json">
           <provider selected="true" editor-type-id="text-editor">
             <state>
-              <caret column="56" lean-forward="true" selection-start-column="56" selection-end-column="56" />
+              <caret column="56" selection-start-column="56" selection-end-column="56" />
             </state>
           </provider>
         </entry>
@@ -47,7 +36,7 @@
         <entry file="file://$PROJECT_DIR$/good_addresses.json">
           <provider selected="true" editor-type-id="text-editor">
             <state>
-              <caret column="858" lean-forward="true" selection-start-column="858" selection-end-column="858" />
+              <caret column="1023" selection-start-column="1023" selection-end-column="1023" />
             </state>
           </provider>
         </entry>
@@ -55,8 +44,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pq_comms.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1241">
-              <caret line="73" column="29" selection-start-line="73" selection-start-column="29" selection-end-line="73" selection-end-column="29" />
+            <state relative-caret-position="625">
+              <caret line="113" column="27" lean-forward="true" selection-start-line="113" selection-start-column="27" selection-end-line="113" selection-end-column="27" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -73,14 +62,20 @@
       </list>
     </option>
   </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>proc</find>
+    </findStrings>
+  </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/pq_comms.py" />
         <option value="$PROJECT_DIR$/bad_addresses.json" />
         <option value="$PROJECT_DIR$/good_addresses.json" />
-        <option value="$PROJECT_DIR$/client.py" />
         <option value="$PROJECT_DIR$/error_graphs.py" />
+        <option value="$PROJECT_DIR$/Defaults.py" />
+        <option value="$PROJECT_DIR$/pq_comms.py" />
+        <option value="$PROJECT_DIR$/client.py" />
       </list>
     </option>
   </component>
@@ -142,13 +137,13 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="14626000" />
+    <option name="totallyTimeSpent" value="21023000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="67" y="25" width="1853" height="925" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.13945766" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.13890426" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -175,16 +170,6 @@
     <option name="version" value="1" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/pq_comms.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1241">
-          <caret line="73" column="29" selection-start-line="73" selection-start-column="29" selection-end-line="73" selection-end-column="29" />
-          <folding>
-            <element signature="e#0#11#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/plot_param.py">
       <provider selected="true" editor-type-id="text-editor">
         <state>
@@ -197,33 +182,48 @@
     <entry file="file://$PROJECT_DIR$/good_addresses.json">
       <provider selected="true" editor-type-id="text-editor">
         <state>
-          <caret column="858" lean-forward="true" selection-start-column="858" selection-end-column="858" />
+          <caret column="1023" selection-start-column="1023" selection-end-column="1023" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/bad_addresses.json">
       <provider selected="true" editor-type-id="text-editor">
         <state>
-          <caret column="56" lean-forward="true" selection-start-column="56" selection-end-column="56" />
+          <caret column="56" selection-start-column="56" selection-end-column="56" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/client.py">
+    <entry file="file://$PROJECT_DIR$/Defaults.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="51">
-          <caret line="24" lean-forward="true" selection-start-line="24" selection-end-line="24" />
-          <folding>
-            <element signature="e#23#39#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="136">
+          <caret line="8" column="51" lean-forward="true" selection-start-line="8" selection-start-column="51" selection-end-line="8" selection-end-column="51" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/error_graphs.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="6" column="19" selection-start-line="6" selection-start-column="19" selection-end-line="6" selection-end-column="19" />
+        <state relative-caret-position="51">
+          <caret line="3" column="24" lean-forward="true" selection-start-line="3" selection-start-column="24" selection-end-line="3" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pq_comms.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="625">
+          <caret line="113" column="27" lean-forward="true" selection-start-line="113" selection-start-column="27" selection-end-line="113" selection-end-column="27" />
           <folding>
-            <element signature="e#16#27#0" expanded="true" />
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/client.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-612">
+          <caret line="64" column="54" selection-start-line="64" selection-start-column="54" selection-end-line="64" selection-end-column="54" />
+          <folding>
+            <element signature="e#23#39#0" expanded="true" />
+            <marker date="1560761638089" expanded="true" signature="2269:2503" ph="..." />
           </folding>
         </state>
       </provider>
