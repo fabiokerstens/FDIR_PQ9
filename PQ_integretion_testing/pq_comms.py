@@ -80,7 +80,8 @@ class pq:
         # Instance method to ping the one of the destinations at the spacecraft
         # bus.
         # print("Sending")
-        self.status = "Sending"
+        self.status = "Sending ping"
+        print "sending ping"
         msg = {}
         msg['_send_'] = 'Ping'
         msg['Destination'] = destination
@@ -125,7 +126,7 @@ class pq:
 
     def housekeeping(self, destination):
         # Function to get the housekeeping data from the subsystems.
-        self.status = "Sending"
+        self.status = "Sending housekeeping"
         msg = {}
         msg['_send_'] = 'GetTelemetry'
         msg['Destination'] = destination
