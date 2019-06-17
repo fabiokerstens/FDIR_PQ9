@@ -27,7 +27,7 @@ The Texas Instruments MSP432P401R LaunchPad is used to run the onboard commands 
 following memory allocation:
 
 <p align="center">
-  <img src="https://github.com/fabiokerstens/FDIR_PQ9/tree/master/Figures_README/memory_allocation.JPG">
+  <img src="Figures_README/memory_allocation.JPG" width="700">
 </p>
 
 In the present work we only model SEUs in the SRAM of the board, which located in 0x0100000 up to 0x01100000 (1,048,576 
@@ -65,7 +65,7 @@ bytes contain a Cyclic Redundancy Check, which is used to verify if errors in th
 A schematic overview of a packet for the housekeeping debug service is shown below, where the message is highlighted:
 
 <p align="center">
-  <img src="https://github.com/fabiokerstens/FDIR_PQ9/tree/master/Figures_README/debug_packet.PNG">
+  <img src="Figures_README/debug_packet.PNG">
 </p>
 
 The message contains the housekeeping information of the particular subsystems of DELFI-PQ. The output in the DEBUG 
@@ -99,7 +99,7 @@ To transmit or receive data to or from the Delfi-PQ, the the following items are
 Testing of the FDIR of the different subsystems on-board of Delfi-PQ can be done in a modular way, by adding and removing different subsystems to the test environment, as shown in the figure below. 
 
 <p align="center">
-  <img src="https://github.com/fabiokerstens/FDIR_PQ9/tree/master/Figures_README/flatsat_overview.png">
+  <img src="Figures_README/flastsat_overview.PNG" width="150">
 </p>
 
 First, the user can select the subsystems to test the FDIR from, by attaching different Delfi-PQ subsystems to to FLATSAT. Communication is done via the RS-485 serial interface. The FLATSAT is a developer board used to connect the Delfi-PQ subsystems to the computer for validation testing. In the present work, the Texas Instruments LaunchPad is used as the FLATSAT interface. Commnication with the computer is done via USB serial. 
