@@ -87,13 +87,28 @@ of the EPS subsystem).
 
 
 ## How to Use  
-
 ### Prerequisites
-To run the FDIR code, one requires the MSP432P401R LaunchPad, as well as a USB to micro-USB cable with a computer, running either LINUX or WINDOWS.
-In the presented work, WINDOWS is used, but the same commands can be used for connection via a LINUX terminal.
+To transmit or receive data to or from the Delfi-PQ, the the following items are required:
 
-### Hardware Setup
-To setup the system, connect the LaunchPad to the computer via one of the USB ports. Open WINDOWS PowerShell in administrator mode and locate the repository:
+* Computer running on either Windows or LINUX, with **Python 2.7** installed. 
+* Texas Instruments [MSP432P401R LaunchPad](http://www.ti.com/tool/MSP-EXP432P401R)
+* Micro USB to USB C cable. 
+* Delfi-PQ subsystems (if being tested). 
+
+### Hardware Overview
+Testing of the FDIR of the different subsystems on-board of Delfi-PQ can be done in a modular way, by adding and removing different subsystems to the test environment, as shown in the figure below. 
+
+<p align="center">
+  <img src="https://github.com/fabiokerstens/FDIR_PQ9/tree/master/Figures_README/flatsat_overview">
+</p>
+
+First, the user can select the subsystems to test the FDIR from, by attaching different Delfi-PQ subsystems to to FLATSAT. Communication is done via the RS-485 serial interface. The FLATSAT is a developer board used to connect the Delfi-PQ subsystems to the computer for validation testing. In the present work, the Texas Instruments LaunchPad is used as the FLATSAT interface. Commnication with the computer is done via USB serial. 
+
+On the computer one uses the EGSE application programing interface to transmit and receive data to the Delfi-PQ, via the FLATSAT. Outside the the EGSE GUI, in which the user can commmunicate the Delfi-PQ with in GUI inveronment, the user can also use Python to communicate with Delfi-PQ. The latter gives more flexibility in the testing software that can be used, since the EGSE GUI has limited testing options available. 
+
+
+### Software Setup
+To setup the system, connect the FLATSAT to the computer via one of the USB ports. Open WINDOWS PowerShell in administrator mode and locate the repository:
 
 ```
 cd C:\...\FDIR_PQ9
@@ -108,7 +123,6 @@ java -jar target/PQ9EGSE-0.1-SNAPSHOT-jar-with-dependencies.jar
 
 Now, one can open a webbrowser to visit localhost:8080 to visualize the API and run commands to the board. 
 
-### Software Setup
 With the board connected, and the EGSE software running, python can be used to run commands to the board with the client.py file. However, first the code must be changed to the directory on your computer. In the folder **PQ_integretion_testing** open the folder **Defaults.py**, and update the directories to match those on your computer. 
 
 After this, **client.py** can be run via PowerShell. First the directory must be changed, and then the file called, with the following commands:
@@ -136,3 +150,5 @@ to implement a watchdog timer on the board to let it reset by itself if no respo
 
 
 ## Recommendations
+
+Make the system compatible with Python 3.0
