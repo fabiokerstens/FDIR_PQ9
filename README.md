@@ -99,7 +99,7 @@ To transmit or receive data to or from the Delfi-PQ, the the following items are
 Testing of the FDIR of the different subsystems on-board of Delfi-PQ can be done in a modular way, by adding and removing different subsystems to the test environment, as shown in the figure below. 
 
 <p align="center">
-  <img src="https://github.com/fabiokerstens/FDIR_PQ9/tree/master/Figures_README/flatsat_overview">
+  <img src="https://github.com/fabiokerstens/FDIR_PQ9/tree/master/Figures_README/flatsat_overview.png">
 </p>
 
 First, the user can select the subsystems to test the FDIR from, by attaching different Delfi-PQ subsystems to to FLATSAT. Communication is done via the RS-485 serial interface. The FLATSAT is a developer board used to connect the Delfi-PQ subsystems to the computer for validation testing. In the present work, the Texas Instruments LaunchPad is used as the FLATSAT interface. Commnication with the computer is done via USB serial. 
@@ -108,29 +108,38 @@ On the computer one uses the EGSE application programing interface to transmit a
 
 
 ### Software Setup
-To setup the system, connect the FLATSAT to the computer via one of the USB ports. Open WINDOWS PowerShell in administrator mode and locate the repository:
-
+Download this repository and store it on your computer. Connect the FLATSAT to the computer using the micro USB to USB C cable (a green LED should now blink on the board). When using Windows, open Windows PowerShell in administrator mode and run the following command:
 ```
-cd C:\...\FDIR_PQ9
-```
-
-where the dots are to be replaced with the repository directory. Next, run the following commands to deploy the EGSE API from the JAVA target:
-
-```
-cd PQ9EGSE
+cd C:\...\FDIR_PQ9\PQ9EGSE
 java -jar target/PQ9EGSE-0.1-SNAPSHOT-jar-with-dependencies.jar
 ```
+where the dots are to be replaced with the repository directory. When using LINUX, open the terminal and run the following command:
+```
+cd C:\...\FDIR_PQ9\PQ9EGSE
+sudo java -jar target/PQ9EGSE-0.1-SNAPSHOT-jar-with-dependencies.jar
+```
 
-Now, one can open a webbrowser to visit localhost:8080 to visualize the API and run commands to the board. 
+Both cases will load the EGSE application programing interface. This can now be accessed by going to the internet browser and  typing in the adress bar:
+```
+localhost:8080
+```
 
-With the board connected, and the EGSE software running, python can be used to run commands to the board with the client.py file. However, first the code must be changed to the directory on your computer. In the folder **PQ_integretion_testing** open the folder **Defaults.py**, and update the directories to match those on your computer. 
+This will bring you to the EGSE GUI, as shown in the picture below. In the header, define the serial port used by the FLATSAT (COM7 in the figure). Note that one of the ports if for serial communication, and the other only for programming. 
 
-After this, **client.py** can be run via PowerShell. First the directory must be changed, and then the file called, with the following commands:
+<p align="center">
+  <img src="https://github.com/fabiokerstens/FDIR_PQ9/tree/master/Figures_README/egse.gui.png">
+</p>
+
+One can test if a sucesfull connection is obtained by sending a ping to **DEBUG**. In the DataLog on the left side of the screen, a transmitted message should now prompt in yellow, as well as a received message in black. 
+
+Running the Python testing software is done via the **client.py**. One can open any Python 2.7 editor (e.g. IDLE) to open this file and run it. Additionally, in one can also run the script diretly via Windows Powershell or LINUX terminal when using the command:
 
 ```
-cd PQ_integretion_testing
+cd C:\...\FDIR_PQ9\PQ_integretion_testing
 python client.py
 ```
+
+
 
 In both the EGSE software and the python files, the memory address must be input in decimal, for which the range is 
 536,870,912 to  537,9191,488.
@@ -150,5 +159,4 @@ to implement a watchdog timer on the board to let it reset by itself if no respo
 
 
 ## Recommendations
-
-Make the system compatible with Python 3.0
+* Currently, the testing software is only compatible with Python 2.7. This version is already qutie old and noweadays Python 3.0 is used for most programming applications. Therefore, to keep the testing software future-proof, it is recommended to make the code compatible for both Python 2.7 and Python 3.
