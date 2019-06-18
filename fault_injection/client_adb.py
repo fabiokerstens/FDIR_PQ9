@@ -18,7 +18,8 @@ import random
 # ===================================
 
 json_data_errors = r"address_logs/data_errors.json".replace('\\', '/')
-json_missing_packets = r"address_logs/missing_packets.json".replace('\\', '/')
+json_missing_hk_packets = r"address_logs/missing_hk_packets.json".replace('\\', '/')
+json_missing_ft_packets = r"address_logs/missing_ft_packets.json".replace('\\', '/')
 json_no_errors = r"address_logs/no_errors.json".replace('\\', '/')
 
 
@@ -100,9 +101,13 @@ def send_packets():
 
     # --->>> Generating lists to record memory addresses tested
     try:
-        missing_packets = json.load(open(json_missing_packets.replace('\\', '/')))
+        missing_ft_packets = json.load(open(json_missing_ft_packets.replace('\\', '/')))
     except:
-        missing_packets = []    # Memory addresses where flipped bit causes missing packets
+        missing_ft_packets = []    # Memory addresses where flipped bit causes missing packets
+    try:
+        missing_hk_packets = json.load(open(json_missing_hk_packets.replace('\\', '/')))
+    except:
+        missing_hk_packets = []    # Memory addresses where flipped bit causes missing packets
     try:
         data_errors = json.load(open(json_data_errors.replace('\\', '/')))
     except:
@@ -125,9 +130,10 @@ def send_packets():
 
         if packets:
             # Radomising the memory address and checking it is one that hasn't already been checked
-            memory_address = random.randint(sram_0, sram_int+5000)
-            while memory_address in missing_packets or memory_address in no_errors or memory_address in data_errors:
-                memory_address = random.randint(sram_0, sram_int+5000)
+            memory_address = random.randint(sram_0, sram_int+10000)
+            while memory_address in missing_ft_packets or memory_address in missing_hk_packets or memory_address in \
+                    no_errors or memory_address in data_errors:
+                memory_address = random.randint(sram_0, sram_int+10000)
 
             # Using a mask to set all bits in a certain memory address to 1
             pq_class.ftdebug(destination, str(memory_address), "set", "255")
@@ -166,12 +172,14 @@ def send_packets():
                         else:
                             print
                             "Packet still missing. Resetting board"
-                            missing_packets = address_list_update(memory_address, missing_packets, json_missing_packets)
+                            missing_hk_packets = address_list_update(memory_address, missing_hk_packets,
+                                                                   json_missing__hk_packets)
                             counter_sent = eps_reset()
 
                     else:
                         print "Packet still missing. Resetting board"
-                        missing_packets = address_list_update(memory_address, missing_packets, json_missing_packets)
+                        missing_hk_packets = address_list_update(memory_address, missing_hk_packets,
+                                                                 json_missing_hk_packets)
                         counter_sent = eps_reset()
 
                 else:
@@ -206,12 +214,14 @@ def send_packets():
                             counter_sent = eps_reset()
                     else:
                         print "Packets still missing. Resetting board"
-                        missing_packets = address_list_update(memory_address, missing_packets, json_missing_packets)
+                        missing_ft_packets = address_list_update(memory_address, missing_ft_packets,
+                                                                 json_missing_ft_packets)
                         counter_sent = eps_reset()
 
                 else:
                     print "Packets still missing. Resetting board"
-                    missing_packets = address_list_update(memory_address, missing_packets, json_missing_packets)
+                    missing_ft_packets = address_list_update(memory_address, missing_ft_packets,
+                                                             json_missing_ft_packets)
                     counter_sent = eps_reset()
 
 
