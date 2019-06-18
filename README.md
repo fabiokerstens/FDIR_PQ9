@@ -18,6 +18,12 @@ And in the **PQ9EGSE** folder there are two main files:
 * **target/PQ9EGSE-0.1-SNAPSHOT-jar-with-dependencies.jar** the java file which launchs the EGSE software.
 * **EPS.xml** contain the definitions of all the requests that can be sent to the board.
 
+Other files of note in the **fault_injection** folder are:
+
+* **error_graphs.py** creats a graph of the error locations
+* **pq_comms.py** defines the requests as functions which can be executed with python
+* **testing.txt** logs all of the packets returned by the board
+
 ## 3. Design
 ### 3.1 Literature Overiew
 In the past, several attempet were already made on developing to develop a FDIR validation simulation, which have been used throughout this work as a reference. Firstly, [Delfi-PQ_FDIR](https://github.com/JochimM/Delfi-PQ_FDIR), uses an Arduino to simulate the spacecraft. Errors are only injected in the SRAM memory and communication is done via standard USB serial. Error checking is done by asking housekeeping data, which contains the names of the authors as well as the borwein pi approximation. Since both housekeeping parameters are fixed and can be well modelled, the authors can check for errors in the received data. Their simulations oututs a memory map of the memory loction and specific bits in which soft errors (wrong housekeeping data) and hard errors (Arduino crash) occur. 
