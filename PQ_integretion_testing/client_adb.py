@@ -12,7 +12,14 @@ import time
 import signal
 import sys
 import random
-from Defaults import json_no_errors, json_data_errors, json_missing_packets
+
+# ===================================
+# ------- Loading .json files -------
+# ===================================
+
+json_data_errors = r"address_logs/data_errors.json".replace('\\', '/')
+json_missing_packets = r"address_logs/missing_packets.json".replace('\\', '/')
+json_no_errors = r"address_logs/no_errors.json".replace('\\', '/')
 
 
 # =================================
