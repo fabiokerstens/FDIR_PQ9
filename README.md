@@ -68,7 +68,7 @@ the second byte the size of the message transmitted, the third byte contains the
   <img src="figures/debug_packet.PNG">
 </p>
 
-The message contains the housekeeping information of the particular subsystems of DELFI-PQ. The output in the DEBUG 
+The message contains the housekeeping information of the particular subsystems of Delfi-PQ. The output in the DEBUG 
 mode is mainly constant, but also consists of some variable bytes (bytes which change over time). The decimal values 
 for the constant bytes when invoking a DEBUG housekeeping request are shown in the figure above. The packets returnd by invoking an ADB housekeeping request when conncted to the FLATSAT are larger, but still contain variable bytes for the counter and fixed bytes representing testing 2 (0xcafe) and testing 4 (0xdeadbeef). The counter will be used to identify missing packages, while testing 2 and testing 4 will be used to check the data produced by housekeeping is not corrupt 
 
@@ -134,17 +134,25 @@ python error_graphs.py
 
 
 ## 4. Results
-For the real subsystem, the FLATSAT is used instead, with the ADB subsystem. This setup connected is shown in the figure below. 
 
+### 4.1 Testing with LaunchPad
+In the first phase of the software testing campaign tests were performed with the LaunchPad development board, where simple ping, housekeeping and FTDebug commands were tested. The LaunchPad board was configured ran on a software very comparable to the one present on FLATSAT, and provided a simple and fast way to verify the software. For tests with the LaunchPad  **ADD RESULTS HERE**
+
+<p align="center">
+  <img src="figures/error_graph.png">
+</p>
+
+
+
+### 4.2 Testing with FLATSAT
+The second phase of the testing campaign consted of tests witht he FLATSAD with the ADB subystem of Delfi-PQ attached. 
 <p align="center">
   <img src="figures/hardware_overview.PNG">
 </p>
 
 
 
-<p align="center">
-  <img src="https://github.com/fabiokerstens/FDIR_PQ9/blob/master/Figures_README/error_graph.png">
-</p>
+
 
 ## 5. Issues Encountered 
 When a SEU is sent to some particular memory locations, the microcontroller fully "freezes" and communication with the
@@ -152,19 +160,11 @@ board is no longer possible. This state could only be recovered from by pressing
 However, this is not practical in reality if one wants to test the full memory spectrum. Therefore, it is recommended
 to implement a watchdog timer on the board to let it reset by itself if no response is detected. 
 
-**ISSUES when deploying with EGSE**
-
-Laptop not recognizing EGSE
-
-
-[old range]
-Here, the effects of SEUs in the SRAM shall be considered, which for MSP432 is located in memory address 
-range 0x2000 0000 to 0x2010 0000. 
+During the testing phase of the project, many issues were encountered with deploying EGSI from LINUX in a virtualbox environment. This often solved itself by fully shutting down the virtual box and restarting it. 
 
 
 
 ## 6. Recommendations
 * Currently, the testing software is only compatible with Python 2.7. This version is already qutie old and noweadays Python 3.0 is used for most programming applications. Therefore, to keep the testing software future-proof, it is recommended to make the code compatible for both Python 2.7 and Python 3.
-
 
 * Modify the script to allow for the change of a single bit in the memory byte, instead of setting the whole byte to 0xFFFFFFFF. 
