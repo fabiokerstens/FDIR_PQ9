@@ -41,7 +41,7 @@ def get_packets():
 
 
 # Checks house keeping packet is correct
-def housekeeping_check(packet):
+def housekeeping_check(packet, boot_counter):
     if packet['DBGSW1'] != "OFF" or packet['DBGSW2'] != "OFF":
         print "Error in board button reading"
         return False
@@ -93,9 +93,9 @@ def send_packets():
         if i >= 2:
             # Flipping a bit, all inputs must be strings
 
-            memory_address = random.randint(sram_0, sram_1)
+            memory_address = random.randint(sram_0, sram_int + 100000)
             while memory_address in missing_packets or memory_address in no_errors or memory_address in data_errors:
-                memory_address = random.randint(sram_0, sram_1)
+                memory_address = random.randint(sram_0, sram_int + 100000)
 
             # memory_address = random.randint(sram_int-1000, sram_int+1000)
             # while memory_address in missing_packets or memory_address in no_errors or memory_address in data_errors:
@@ -152,6 +152,9 @@ def send_packets():
                             with open(json_data_errors, 'w') as fout:
                                 json.dump(data_errors, fout)
         else:
+            missing_packets.append(memory_address)
+            with open(json_missing_packets, 'w') as fout:
+                json.dump(missing_packets, fout)
             print "no packets \n"
             time.sleep(2)
             print "reset board"
