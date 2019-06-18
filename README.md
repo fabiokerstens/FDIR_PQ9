@@ -1,6 +1,6 @@
 # FDIR_PQ9
 
-## Purpose
+## 1. Purpose
 Delft University of Technology is currently developing the [Delfi-PQ](https://www.tudelft.nl/lr/subsites/delfi-space/delfi-pq/), a 3U PocketCube spacecraft, expected to launch in 2019. Throughout its mission, Delfi-PQ will be in a severe radiation environment in low Earth orbit, which could potentially harm the spacecraft electronics. The radiation effect focussed on in the present work is the Single Event Upset (SEU), which origins from ionizing parcles interacting with the spaccraft electronics. The SEU is a soft error (recoverable) with unpredictable consequences. One of the consequences of SEUs are changes in memory locations, which could result in retrieving incorrect housekeeping data from the spacecraft. 
 
 Clearly SEUs should be corrected for, which is normally done by an on-board Fault Detection, Isolation and Recovery (FDIR) algorithm. FDIR algorithms are vital for the correct in-orbit operation of the Delfi-PQ and hence shall be tested extensively on Earth to validate correct function. For large spacecraft, this is often done by using radiation hardened electronics or by testing the flight computer in a radiation environment. Both these options add a lot of cost to the overal mission, which is often not possible for small spacecraft, such as Delfi-PQ. Therefore, **the purpose of this repository is to simulate SEUs by means of real time fault injection, in an attempt to validate the Delfi-PQ FDIR algorithm**. 
@@ -8,13 +8,13 @@ Clearly SEUs should be corrected for, which is normally done by an on-board Faul
 The repository is made open-source and allows students from all over the world to contribute to the project. 
 
 
-## Design
-### Literature Overiew
+## 2. Design
+### 2.1 Literature Overiew
 In the past, several attempet were already made on developing to develop a FDIR validation simulation, which have been used throughout this work as a reference. Firstly, [Delfi-PQ_FDIR](https://github.com/JochimM/Delfi-PQ_FDIR), uses an Arduino to simulate the spacecraft. Errors are only injected in the SRAM memory and communication is done via standard USB serial. Error checking is done by asking housekeeping data, which contains the names of the authors as well as the borwein pi approximation. Since both housekeeping parameters are fixed and can be well modelled, the authors can check for errors in the received data. Their simulations oututs a memory map of the memory loction and specific bits in which soft errors (wrong housekeeping data) and hard errors (Arduino crash) occur. 
 
 Another attempt was made in the [Delfi-PQ_FDIR_Evaluator](https://github.com/FlyOHolic/Delfi-PQ_FDIR_Evaluator), where the authors used two Texas Instruments MSP432P401R LaunchPad development boards, which is identical to the development board used in the present work. They use Python to inject error in the SRAM zone of the memory (0x20000000-0x20100000). Their board is programmed to continuously transmit the message "Hello World", which can have a different output if errors are introduced in the board. They distinguish four types of errors of which the two most relevant are: (1) *lockup* in which the boards stops responding, (2) *data corruption* in which the outputted "Hello World" string is corrupted.
 
-### Memory Overview
+### 2.2 Memory Overview
 To simulate created errors due to SEUs the approach used in this work injects failures in the memory of the Delfi-PQ. The on-board memory is modelled with the FLATSAT interface or the MSP432P401R LaunchPad, which both have the same microcontroller. The memory map for the particular microcontroller used is shown in the figure below (source: [Texas Instruments](http://www.ti.com/lit/ds/symlink/msp432p401r.pdf)). 
 
 <p align="center">
@@ -23,16 +23,33 @@ To simulate created errors due to SEUs the approach used in this work injects fa
 
 Like the previous iterations of the FDIR evalaution software, the errors are only injected in the SRAM region of the board, which is located at 0x20000000-0x20100000 (or at 0x01000000-0x01100000 on the code part, this is the same memory). 
 
-### FLATSAT Overview
+### 2.3 Error Injection
 Testing of the FDIR of the different subsystems on-board of Delfi-PQ can be done in a modular way, by adding and removing different subsystems to the test environment, as shown in the figure below. 
 
 <p align="center">
   <img src="figures/flastsat_overview.PNG" width="150">
 </p>
 
-First, the user can select the subsystems to test the FDIR from, by attaching different Delfi-PQ subsystems to to FLATSAT. Communication is done via the RS-485 serial interface. The FLATSAT is a developer board used to connect the Delfi-PQ subsystems to the computer for validation testing. In the present work, the Texas Instruments LaunchPad is used as the FLATSAT interface. Commnication with the computer is done via USB serial. 
+Here, the FLATSAT is used for communication between the spacecraft subsystems and computer for testing and debugging. Communication between FLATSAT and the subsystems is done via the RS-485 serial interface, and between FLATSAT and the computer via USB serial. On the computer one uses the EGSE application programing interface to transmit and receive data to the Delfi-PQ, via the FLATSAT. The errors can be injected in the SRAM manually via the EGSE GUI or automatically via the **client.py** script witten in Python. The software loop running on the **client.py** file is whon in the flowchart below:
 
-On the computer one uses the EGSE application programing interface to transmit and receive data to the Delfi-PQ, via the FLATSAT. Outside the the EGSE GUI, in which the user can commmunicate the Delfi-PQ with in GUI inveronment, the user can also use Python to communicate with Delfi-PQ. The latter gives more flexibility in the testing software that can be used, since the EGSE GUI has limited testing options available. 
+<p align="center">
+  <img src="figures/flowchart.png" width="600">
+</p>
+
+Every iteration of the loop starts with pinging the target subsystem, and checking if a packet is received back. If for some reason no packet is received, the bus is reset and a new ping command is send the the subsystem. Next, the memory adress is defined in the SRAM memory range defined in the previous section. This is a random process, for which the results are **uniformly distributed - WRITE SOMETHING ABOUT THE RANDOM FUNCTION USED**. 
+
+After the definition of the memory location to inject the fault in, the **FTDebug** function is called. Despite the target memory adress, the function also requires a bit mask and an operator, which can either be *set*, *clear* or *toggle*. These operators essentially perform a bitwise operations with the target byte and the mask byte, as shown in the figure below. 
+
+<p align="center">
+  <img src="figures/bitwise_operation.PNG" width="600">
+  Figure 1: FTDebug operators. 
+</p>
+
+In the present work, the operator is defined as *and*, with a constant bit mask of 255 (i.e. 0xFFFFFFFF). This command essentially changes the target byte to the value 0xFFFFFFFF and hence injects a fault in the memory. Hereafter, a **housekeeping** request is send to the target subsystem. **CONTINUE**
+
+
+
+
 
 For the real subsystem, the FLATSAT is used instead, with the ADB subsystem. This setup connected is shown in the figure below. 
 
@@ -42,34 +59,11 @@ For the real subsystem, the FLATSAT is used instead, with the ADB subsystem. Thi
 
 
 
-### Single Event Upsets
-Single Event Upsets (SEU) are a type of recoverable error (soft errors) which origin from ionizing parcles interacting
-with the spaccraft electronics. SEUs occur in all Bipololar, CMOS or BiCMOS technologies, except in EEPROM or flash 
-EEPROM. In the present work, SEUs are modelled through bitflips in memory cells or registers of the electronics. 
-The Texas Instruments MSP432P401R LaunchPad is used to run the onboard commands of the DELFI-PQ. This board has the 
-following memory allocation:
 
-<p align="center">
-  <img src="figures/memory_allocation.JPG" width="700">
-</p>
-
-In the present work we only model SEUs in the SRAM of the board, which located in 0x0100000 up to 0x01100000 (1,048,576 
-up to 17,825,792) and in 0x2000000 up to 0x3FFFFFFF (33,554,432 up to 53,687,091). 
-
-[old range]
-Here, the effects of SEUs in the SRAM shall be considered, which for MSP432 is located in memory address 
-range 0x2000 0000 to 0x2010 0000. 
-
-<p align="center">
-  <img src="figures/bitwise_operation.PNG" width="600">
-</p>
 
 
 A Cyclic Redundancy Check is implemented in the PQ9 communication protocol to account for errors during data transfer. When an error during data transfer occur, the EGSE application programming interface automatically rejects the packet. Hence, when running the **client_adb.py**, no packet will show up. To counteract this, a housekeeping loop is implemented, called, which transmist a housekeeping request op to three times when no packet is received. The flowchart used for this is shown below:
 
-<p align="center">
-  <img src="figures/flowchart.png" width="600">
-</p>
 
 
 
@@ -108,9 +102,6 @@ of the EPS subsystem).
 
 
 
-
-
-
 ## How to Use  
 ### Prerequisites
 To transmit or receive data to or from the Delfi-PQ, the the following items are required:
@@ -140,7 +131,7 @@ localhost:8080
 This will bring you to the EGSE GUI, as shown in the picture below. In the header, define the serial port used by the FLATSAT (COM7 in the figure). Note that one of the ports if for serial communication, and the other only for programming. 
 
 <p align="center">
-  <img src="Figures_README/egse_gui.png">
+  <img src="figures/egse_gui.png">
 </p>
 
 One can test if a sucesfull connection is obtained by sending a ping to **DEBUG** if connected to the TI MSP342 or to **ADB** if connected to the PQ hardware. In the DataLog on the left side of the screen, a transmitted message should now prompt in yellow, as well as a received message in black. 
@@ -177,5 +168,15 @@ to implement a watchdog timer on the board to let it reset by itself if no respo
 
 Laptop not recognizing EGSE
 
+
+[old range]
+Here, the effects of SEUs in the SRAM shall be considered, which for MSP432 is located in memory address 
+range 0x2000 0000 to 0x2010 0000. 
+
+
+
 ## Recommendations
 * Currently, the testing software is only compatible with Python 2.7. This version is already qutie old and noweadays Python 3.0 is used for most programming applications. Therefore, to keep the testing software future-proof, it is recommended to make the code compatible for both Python 2.7 and Python 3.
+
+
+* Modify the script to allow for the change of a single bit in the memory byte, instead of setting the whole byte to 0xFFFFFFFF. 
