@@ -75,17 +75,21 @@ the second byte the size of the message transmitted, the third byte contains the
 
 The message contains the housekeeping information of the particular subsystems of Delfi-PQ. The output in the DEBUG 
 mode is mainly constant, but also consists of some variable bytes (bytes which change over time). The decimal values 
-for the constant bytes when invoking a DEBUG housekeeping request are shown in the figure above. The packets returnd by invoking an ADB housekeeping request when conncted to the FLATSAT are larger, but still contain variable bytes for the counter and fixed bytes representing testing 2 (0xcafe) and testing 4 (0xdeadbeef). The counter will be used to identify missing packages, while testing 2 and testing 4 will be used to check the data produced by housekeeping is not corrupt 
+for the constant bytes when invoking a DEBUG housekeeping request are shown in the figure above. The packets returnd by invoking an ADB housekeeping request when conncted to the FLATSAT are larger, but still contain variable bytes for the counter and fixed bytes representing testing 2 (0xcafe) and testing 4 (0xdeadbeef). The counter will be used to identify missing packages, while testing 2 and testing 4 will be used to check the data produced by housekeeping is not corrupt. While corrupt house keeping data is not expected to be seen when running the code on the FLATSAT with the ADB, this method was used when it was initially connected to, to ensure the .xml file was operating nominally with it. 
 
 <!--- All bytes with a variable value can be computed in PYTHON, and are either integer counters or timer values.  Once these variable values are computed, they can be used to create a reference message, together with the constant value bytes. This constructed reference message can in term be used to compare against the received message to check for corrupted data errors. --->
 
 We assume that during the transmission no errors in the data are introduced, and that the errors that are introduced
 during the tranmission are corrected for by the Cyclic Redundancy Check built in the packet. 
 
-It should be noted that this comparison method works only for simple data packets, such as the DEBUG housekeeping request.
+<!---- It should be noted that this comparison method works only for simple data packets, such as the DEBUG housekeeping request.
 This is because all variables in the DEBUG subsystem are well predictable. For other subystems, this becomes more tricky
 since the data stored in the packets can be highly variable in time, and non-predictable (e.g. the voltage on a battery
-of the EPS subsystem). 
+of the EPS subsystem). ---> 
+
+The TI board was used to test the *FTDebug* function was working properly, by testing the function at memory locations where the outcome was already know. At a memory address of "536874642", an operator "set", and a bit mask of "255", it was known that the board would lock up, while at "536874742" a bit flip would cause no errors. These points were used to check both the EGSE and python codes were running correctly. 
+
+
 
 
 ## 3. How to Use  
@@ -129,10 +133,9 @@ cd FDIR_PQ9\PQ_integretion_testing
 python client_adb.py
 ```
 In both the EGSE software and the python files, the memory address must be input in decimal, for which the range is 
-536,870,912 to  537,9191,488. At present **client_adb.py** looks in the range of 536,870,912 to 536,974,505, but this can be increased, by changing the *randint()* ranges on lines 133 and 136.  
+536,870,912 to  537,9191,488. At present **client_adb.py** looks in the range of 536,870,912 to 536,974,505, but this can be increased, by changing the *randint()* ranges on lines 133 and 136.  Similarly, at present the code in **client_adb.py** has the desination fo the requests set to **"ADB"** but this can be changed on line 93. 
 
-All the addresses tested are recorded in .json files, to ensure no data is lost if the python crashes. These are located in the folder address_logs. The types of errors occuring at the varying memory locations can be plotted using the **error_graphs.py** file. This is the files used to produce the results in the following section.  
-
+As was mentioned earlier, all the addresses tested are recorded in .json files, to ensure no data is lost if the python crashes. These are located in the folder address_logs. If python has issues locating them, the path for their location can be updated at the begining of the **client_adb.py**. The data stored in the .json files can be plotted with **error_graphs.py** as follows:
 ```
 python error_graphs.py
 ```
