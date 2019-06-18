@@ -53,6 +53,7 @@ def eps_reset():
 
 
 # --> Function checks the outputs of testing2 and testing 4 produced by housekeeping
+# Can add more things to check when there is proper data
 def housekeeping_check(packet):
     if packet['testing2'] != "51966":
         print "Error in reading of testing 2"
@@ -75,7 +76,7 @@ def address_list_update(memory_address, address_list, address_file):
 
 
 # Send house keeping command to board
-def house_keeping(counter_sent):
+def house_keeping(destination, counter_sent):
     pq_class.housekeeping(destination)
     print(pq_class.status)
     counter_sent += 1
@@ -115,16 +116,18 @@ def send_packets():
     # --->>> Initialising loop which generates and records data.
     while working:
         # Ping board and check for packet response, if none, resets
+        time.sleep(3)
         pq_class.ping(destination)
         counter_sent += 1
         time.sleep(2)
         packets = pq_class.get_packets()
+        # print(packets)
 
         if packets:
             # Radomising the memory address and checking it is one that hasn't already been checked
-            memory_address = random.randint(sram_int-1000, sram_int+1000)
+            memory_address = random.randint(sram_0, sram_1)
             while memory_address in missing_packets or memory_address in no_errors or memory_address in data_errors:
-                memory_address = random.randint(sram_int - 1000, sram_int + 1000)
+                memory_address = random.randint(sram_0, sram_1)
 
             # Using a mask to set all bits in a certain memory address to 1
             pq_class.ftdebug(destination, str(memory_address), "set", "255")
@@ -133,28 +136,38 @@ def send_packets():
             time.sleep(2)
 
             # Requesting housekeeping to check data is still okay
-            counter_sent = house_keeping(counter_sent)
+            counter_sent = house_keeping(destination, counter_sent)
+
+            time.sleep(2)
 
             # Generating packets
             packets = pq_class.get_packets()
-
+            # print(packets)
+            # print len(packets)
+            # print counter_sent
             if packets:
                 # check correct number of packets present
                 if packets[-1]['Counter'] != str(counter_sent) or len(packets) < 2:
 
                     print "\n Packet missing, retesting house keeping"
-                    counter_sent = house_keeping(counter_sent)
+                    counter_sent = house_keeping(destination, counter_sent)
 
                     packet_new = pq_class.get_packets()
-                    if packet_new['Service'] == 'Housekeeping':
+                    if packet_new:
+                        if packet_new[0]['Service'] == 'Housekeeping':
+                            check = housekeeping_check(packet_new[0])
+                            if check is True:
+                                print
+                                "House keeping good \n"
+                                no_errors = address_list_update(memory_address, no_errors, json_no_errors)
+                            if check is False:
+                                data_errors = address_list_update(memory_address, data_errors, json_data_errors)
 
-                        check = house_keeping(packet_new)
-                        if check is True:
+                        else:
                             print
-                            "House keeping good \n"
-                            no_errors = address_list_update(memory_address, no_errors, json_no_errors)
-                        if check is False:
-                            data_errors = address_list_update(memory_address, data_errors, json_data_errors)
+                            "Packet still missing. Resetting board"
+                            missing_packets = address_list_update(memory_address, missing_packets, json_missing_packets)
+                            counter_sent = eps_reset()
 
                     else:
                         print "Packet still missing. Resetting board"
@@ -176,19 +189,24 @@ def send_packets():
 
             else:
                 print "no packets, retesting house keeping\n"
-                counter_sent = house_keeping(counter_sent)
+                counter_sent = house_keeping(destination, counter_sent)
 
                 packet_new = pq_class.get_packets()
 
-                if packet_new['Service'] == 'Housekeeping':
+                if packets:
+                    if packet_new[0]['Service'] == 'Housekeeping':
 
-                    check = house_keeping(packet_new)
-                    if check is True:
-                        print
-                        "House keeping good \n"
-                        no_errors = address_list_update(memory_address, no_errors, json_no_errors)
-                    if check is False:
-                        data_errors = address_list_update(memory_address, data_errors, json_data_errors)
+                        check = house_keeping(packet_new[0])
+                        if check is True:
+                            print
+                            "House keeping good \n"
+                            no_errors = address_list_update(memory_address, no_errors, json_no_errors)
+                        if check is False:
+                            data_errors = address_list_update(memory_address, data_errors, json_data_errors)
+                            counter_sent = eps_reset()
+                    else:
+                        print "Packets still missing. Resetting board"
+                        missing_packets = address_list_update(memory_address, missing_packets, json_missing_packets)
                         counter_sent = eps_reset()
 
                 else:

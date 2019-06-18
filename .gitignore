@@ -125,6 +125,6 @@ dmypy.json
 .pyre/
 
 .idea
-/PQ_integretion_testing/.idea
+/fault_injection/.idea
 
 
