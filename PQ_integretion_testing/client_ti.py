@@ -2,19 +2,24 @@
 
 import threading
 import json
-# import pq_module as pq
 import pq_comms as pqc
 import time
 import signal
 import sys
 import random
-# from PQ_integretion_testing.Defaults import json_bad, json_good
-from Defaults import json_no_errors, json_data_errors, json_missing_packets
 from error_checking import housekeeping_check
 
+# ===================================
+# ------- Loading .json files -------
+# ===================================
 
+json_data_errors = r"address_logs/data_errors.json".replace('\\', '/')
+json_missing_packets = r"address_logs/missing_packets.json".replace('\\', '/')
+json_no_errors = r"address_logs/no_errors.json".replace('\\', '/')
 
-# -------- Functions --------
+# =================================
+# ----------- Functions -----------
+# =================================
 
 
 def signal_handler(sig, frame):

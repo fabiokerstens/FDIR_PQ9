@@ -84,10 +84,9 @@ A schematic overview of a packet for the housekeeping debug service is shown bel
 
 The message contains the housekeeping information of the particular subsystems of DELFI-PQ. The output in the DEBUG 
 mode is mainly constant, but also consists of some variable bytes (bytes which change over time). The decimal values 
-for the constant bytes when invoking a DEBUG housekeeping request are shown in the figure above. All bytes with a 
-variable value can be computed in PYTHON, and are either integer counters or timer values. Once these variable values
-are computed, they can be used to create a reference message, together with the constant value bytes. This constructed 
-reference message can in term be used to compare against the received message to check for corrupted data errors. 
+for the constant bytes when invoking a DEBUG housekeeping request are shown in the figure above. The packets returnd by invoking an ADB housekeeping request when conncted to the FLATSAT are larger, but still contain variable bytes for the counter and fixed bytes representing testing 2 (0xcafe) and testing 4 (0xdeadbeef). The counter will be used to identify missing packages, while testing 2 and testing 4 will be used to check the data produced by housekeeping is not corrupt 
+
+<!--- All bytes with a variable value can be computed in PYTHON, and are either integer counters or timer values.  Once these variable values are computed, they can be used to create a reference message, together with the constant value bytes. This constructed reference message can in term be used to compare against the received message to check for corrupted data errors. --->
 
 We assume that during the transmission no errors in the data are introduced, and that the errors that are introduced
 during the tranmission are corrected for by the Cyclic Redundancy Check built in the packet. 
@@ -153,16 +152,16 @@ This will bring you to the EGSE GUI, as shown in the picture below. In the heade
 
 One can test if a sucesfull connection is obtained by sending a ping to **DEBUG** if connected to the TI MSP342 or to **ADB** if connected to the PQ hardware. In the DataLog on the left side of the screen, a transmitted message should now prompt in yellow, as well as a received message in black. 
 
-Before the code can be run, the file **Defaults.py** must be opened with an editor, and the directories changed to the local directories in which the files are stored, so that the data can be recorded. It can be found in the **PQ_integretion_testing** folder. The data in the .json files is stored between runs of the python files, so to start from scratch the .json files must be opened and emptied. 
-
-Running the Python testing software is done via the **client_adb.py** when connected to the PQ hardware, or **client.py** for testing the code wth TI board. One can open any Python 2.7 editor (e.g. IDLE) to open this file and run it. Additionally, one can also run the script diretly via Windows Powershell or LINUX terminal when using the command:
+Running the Python testing software is done via the **client_adb.py** when connected to the PQ hardware, or **client_ti.py** for testing the code wth TI board. One can open any Python 2.7 editor (e.g. IDLE) to open this file and run it. Additionally, one can also run the script diretly via Windows Powershell or LINUX terminal when using the command:
 
 ```
 cd FDIR_PQ9\PQ_integretion_testing
 python client_adb.py
 ```
 In both the EGSE software and the python files, the memory address must be input in decimal, for which the range is 
-536,870,912 to  537,9191,488. At present **client_adb.py** looks in the range of 536864505 to 536884505, but this can be increased. The **client_adb.py** produces .json files of memory addresses tested. The types of errors occuring at the varying locations can be plotted using the **error_graphs.py** file. 
+536,870,912 to  537,9191,488. At present **client_adb.py** looks in the range of 536864505 to 536884505, but this can be increased. 
+
+All the addresses tested are recorded in .json files, to ensure no data is lost if the python crashes. These are located in the folder address_logs. The types of errors occuring at the varying memory locations can be plotted using the **error_graphs.py** file. This is the files used to produce the results in the following section.  
 
 ```
 python error_graphs.py

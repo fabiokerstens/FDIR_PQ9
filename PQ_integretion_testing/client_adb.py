@@ -12,7 +12,14 @@ import time
 import signal
 import sys
 import random
-from Defaults import json_no_errors, json_data_errors, json_missing_packets
+
+# ===================================
+# ------- Loading .json files -------
+# ===================================
+
+json_data_errors = r"address_logs/data_errors.json".replace('\\', '/')
+json_missing_packets = r"address_logs/missing_packets.json".replace('\\', '/')
+json_no_errors = r"address_logs/no_errors.json".replace('\\', '/')
 
 
 # =================================
@@ -133,7 +140,7 @@ def send_packets():
 
             if packets:
                 # check correct number of packets present
-                if packets[-1]['Counter'] != str(counter_sent):
+                if packets[-1]['Counter'] != str(counter_sent) or len(packets) < 2:
 
                     print "\n Packet missing, retesting house keeping"
                     counter_sent = house_keeping(counter_sent)
@@ -182,6 +189,7 @@ def send_packets():
                         no_errors = address_list_update(memory_address, no_errors, json_no_errors)
                     if check is False:
                         data_errors = address_list_update(memory_address, data_errors, json_data_errors)
+                        counter_sent = eps_reset()
 
                 else:
                     print "Packets still missing. Resetting board"
