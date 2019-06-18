@@ -5,16 +5,26 @@ Delft University of Technology is currently developing the [Delfi-PQ](https://ww
 
 Clearly SEUs should be corrected for, which is normally done by an on-board Fault Detection, Isolation and Recovery (FDIR) algorithm. FDIR algorithms are vital for the correct in-orbit operation of the Delfi-PQ and hence shall be tested extensively on Earth to validate correct function. For large spacecraft, this is often done by using radiation hardened electronics or by testing the flight computer in a radiation environment. Both these options add a lot of cost to the overal mission, which is often not possible for small spacecraft, such as Delfi-PQ. Therefore, **the purpose of this repository is to simulate SEUs by means of real time fault injection, in an attempt to validate the Delfi-PQ FDIR algorithm**. 
 
-The repository is made open-source and allows students from all over the world to contribute to the project. 
+The repository is made open-source and allows students from all over the world to contribute to the project.
 
+## 2. Repository Overview
+In addition to the Readme, there are a few main files required to run the software. In the **fault_injection** folder there are two main files:
 
-## 2. Design
-### 2.1 Literature Overiew
+* **client_ti.py** the python file to analyse the TI MSP342 LaunchPad
+* **client_adb.py** the python file to analyse the FLATSAT ADB
+
+And in the **PQ9EGSE** folder there are two main files:
+
+* **target/PQ9EGSE-0.1-SNAPSHOT-jar-with-dependencies.jar** the java file which launchs the EGSE software.
+* **EPS.xml** contain the definitions of all the requests that can be sent to the board.
+
+## 3. Design
+### 3.1 Literature Overiew
 In the past, several attempet were already made on developing to develop a FDIR validation simulation, which have been used throughout this work as a reference. Firstly, [Delfi-PQ_FDIR](https://github.com/JochimM/Delfi-PQ_FDIR), uses an Arduino to simulate the spacecraft. Errors are only injected in the SRAM memory and communication is done via standard USB serial. Error checking is done by asking housekeeping data, which contains the names of the authors as well as the borwein pi approximation. Since both housekeeping parameters are fixed and can be well modelled, the authors can check for errors in the received data. Their simulations oututs a memory map of the memory loction and specific bits in which soft errors (wrong housekeeping data) and hard errors (Arduino crash) occur. 
 
 Another attempt was made in the [Delfi-PQ_FDIR_Evaluator](https://github.com/FlyOHolic/Delfi-PQ_FDIR_Evaluator), where the authors used two Texas Instruments MSP432P401R LaunchPad development boards, which is identical to the development board used in the present work. They use Python to inject error in the SRAM zone of the memory (0x20000000-0x20100000). Their board is programmed to continuously transmit the message "Hello World", which can have a different output if errors are introduced in the board. They distinguish four types of errors of which the two most relevant are: (1) *lockup* in which the boards stops responding, (2) *data corruption* in which the outputted "Hello World" string is corrupted.
 
-### 2.2 Memory Overview
+### 3.2 Memory Overview
 To simulate created errors due to SEUs the approach used in this work injects failures in the memory of the Delfi-PQ. The on-board memory is modelled with the FLATSAT interface or the MSP432P401R LaunchPad, which both have the same microcontroller. The memory map for the particular microcontroller used is shown in the figure below (source: [Texas Instruments](http://www.ti.com/lit/ds/symlink/msp432p401r.pdf)). 
 
 <p align="center">
@@ -23,7 +33,7 @@ To simulate created errors due to SEUs the approach used in this work injects fa
 
 Like the previous iterations of the FDIR evalaution software, the errors are only injected in the SRAM region of the board, which is located at 0x20000000-0x20100000 (or at 0x01000000-0x01100000 on the code part, this is the same memory). 
 
-### 2.3 Error Injection
+### 3.3 Error Injection
 Testing of the FDIR of the different subsystems on-board of Delfi-PQ can be done in a modular way, by adding and removing different subsystems to the test environment, as shown in the figure below. 
 
 <p align="center">
@@ -54,7 +64,7 @@ no_errors = json.load(open(json_no_errors.replace('\\', '/')))
 There is also a **data_errors.json** file which records the address at which a housekeeping packet is returned but the packet has errors in it. These errors are not produced by the FLATSAT setup, but the option is still included for compatability with other systems. 
 
 
-### 2.4 Error Determination
+### 3.4 Error Determination
 After errors are introduced in the system, it is of interest if these errors indeed propagate through the system or if the FDIR system sucesfully resolves the error. After introducing a SEU in the memory, we distinguish four different errors:
 
 * Corrupted data, corrected by the on-board FDIR (voting etc.). 
@@ -89,14 +99,14 @@ of the EPS subsystem). --->
 
 The TI board was used to test the *FTDebug* function was working properly, by testing the function at memory locations where the outcome was already know. At a memory address of "536874642", an operator "set", and a bit mask of "255", it was known that the board would lock up, while at "536874742" a bit flip would cause no errors. These points were used to check both the EGSE and python codes were running correctly. 
 
-### 2.5 Board reset
+### 3.5 Board reset
 
 Whenever the board locks up, or packets are missing, the flash memory must be reset before any more requests can be invoked. Resetting gets rid of the effects of the bit flip, and in the process resets the packet counter to 0. The reset has the same effects on both the Launchpad and the FLATSAT, but are invoked in different ways. In order to reset the TI Launchpad, the reset button on the side must be pressed. This is not ideal for testing a large amount of data points. However, for the FLATSAT the reset can be performed via software which switches the EPS bus off for 10 seconds, allowing the data to be collected without used input. 
 
 
 
-## 3. How to Use  
-### 3.1 Prerequisites
+## 4. How to Use  
+### 4.1 Prerequisites
 To transmit or receive data to or from the Delfi-PQ, the the following items are required:
 
 * Computer running on either Windows or LINUX, with **Python 2.7** installed. 
@@ -104,7 +114,7 @@ To transmit or receive data to or from the Delfi-PQ, the the following items are
 * Micro USB to USB C cable. 
 * Delfi-PQ ADB subsystem with FLATSAT. 
 
-### 3.2 Software Setup
+### 4.2 Software Setup
 Download this repository and store it on your computer. Connect the FLATSAT to the computer using the micro USB to USB C cable (a green LED should now blink on the board). When using Windows, open Windows PowerShell in administrator mode and run the following command:
 ```
 cd C:\...\FDIR_PQ9\PQ9EGSE
@@ -144,9 +154,9 @@ python error_graphs.py
 ```
 
 
-## 4. Results
+## 5. Results
 
-### 4.1 Testing with LaunchPad
+### 5.1 Testing with LaunchPad
 In the first phase of the software testing campaign tests were performed with the LaunchPad development board, where simple ping, housekeeping and FTDebug commands were tested. The LaunchPad board was configured ran on a software very comparable to the one present on FLATSAT, and provided a simple and fast way to verify the software. Testing the LaunchPad across the memory addree range give above results in the following graph. 
 
 <p align="center">
@@ -155,7 +165,7 @@ In the first phase of the software testing campaign tests were performed with th
 
 
 
-### 4.2 Testing with FLATSAT
+### 5.2 Testing with FLATSAT
 The second phase of the testing campaign consted of tests witht he FLATSAD with the ADB subystem of Delfi-PQ attached. The **client_abd.py** was set up so that the destination of the requests was changed to **"ADB"** and the EPS power commoands were sent to **"Bus4Sw"**. 
 
 <p align="center">
@@ -178,7 +188,7 @@ The FLATSAT was also briefly tested over the entire SRAM range of memory address
 
 
 
-## 5. Issues Encountered 
+## 6. Issues Encountered 
 When a SEU is sent to some particular memory locations, the microcontroller fully "freezes" and communication with the
 board is no longer possible. This state could only be recovered from by pressing the physical reset button on the board.
 However, this is not practical in reality if one wants to test the full memory spectrum. Therefore, it is recommended
@@ -188,7 +198,7 @@ During the testing phase of the project, many issues were encountered with deplo
 
 
 
-## 6. Recommendations
+## 7. Recommendations
 * Currently, the testing software is only compatible with Python 2.7. This version is already qutie old and noweadays Python 3.0 is used for most programming applications. Therefore, to keep the testing software future-proof, it is recommended to make the code compatible for both Python 2.7 and Python 3.
 
 * Modify the script to allow for the change of a single bit in the memory byte, instead of setting the whole byte to 0xFFFFFFFF. 
