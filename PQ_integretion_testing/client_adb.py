@@ -140,7 +140,7 @@ def send_packets():
 
             if packets:
                 # check correct number of packets present
-                if packets[-1]['Counter'] != str(counter_sent):
+                if packets[-1]['Counter'] != str(counter_sent) or len(packets) < 2:
 
                     print "\n Packet missing, retesting house keeping"
                     counter_sent = house_keeping(counter_sent)
