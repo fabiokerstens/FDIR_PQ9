@@ -7,15 +7,15 @@ import time
 import signal
 import sys
 import random
-from error_checking import housekeeping_check
+
 
 # ===================================
 # ------- Loading .json files -------
 # ===================================
 
-json_data_errors = r"address_logs/data_errors.json".replace('\\', '/')
-json_missing_packets = r"address_logs/missing_packets.json".replace('\\', '/')
-json_no_errors = r"address_logs/no_errors.json".replace('\\', '/')
+json_data_errors = r"address_logs/data_errors_ti.json".replace('\\', '/')
+json_missing_packets = r"address_logs/missing_packets_ti.json".replace('\\', '/')
+json_no_errors = r"address_logs/no_errors_ti.json".replace('\\', '/')
 
 # =================================
 # ----------- Functions -----------
@@ -38,6 +38,24 @@ def get_packets():
     global working
     while working:
         pq_class.get_data()
+
+
+# Checks house keeping packet is correct
+def housekeeping_check(packet):
+    if packet['DBGSW1'] != "OFF" or packet['DBGSW2'] != "OFF":
+        print "Error in board button reading"
+        return False
+    if packet['testing4'] != "3735928559" or packet['testing2'] != "51966":
+        print "Error in reading of testing 2 or 4"
+        return False
+    print hex(int(packet['testing2'])), hex(int(packet['testing4']))
+    if packet['SoftwareBootCounter'] != str(0):
+        print "Error in software boot counter"
+        return False
+    if str(boot_counter) != packet['BootCounter']:
+        print "Error in boot counter"
+        return False
+    return True
 
 
 def send_packets():
