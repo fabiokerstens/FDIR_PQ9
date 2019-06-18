@@ -89,6 +89,9 @@ of the EPS subsystem). --->
 
 The TI board was used to test the *FTDebug* function was working properly, by testing the function at memory locations where the outcome was already know. At a memory address of "536874642", an operator "set", and a bit mask of "255", it was known that the board would lock up, while at "536874742" a bit flip would cause no errors. These points were used to check both the EGSE and python codes were running correctly. 
 
+### 2.5 Board reset
+
+Whenever the board locks up, or packets are missing, the flash memory must be reset before any more requests can be invoked. Resetting gets rid of the effects of the bit flip, and in the process resets the packet counter to 0. The reset has the same effects on both the Launchpad and the FLATSAT, but are invoked in different ways. In order to reset the TI Launchpad, the reset button on the side must be pressed. This is not ideal for testing a large amount of data points. However, for the FLATSAT the reset can be performed via software which switches the EPS bus off for 10 seconds, allowing the data to be collected without used input. 
 
 
 
@@ -144,7 +147,7 @@ python error_graphs.py
 ## 4. Results
 
 ### 4.1 Testing with LaunchPad
-In the first phase of the software testing campaign tests were performed with the LaunchPad development board, where simple ping, housekeeping and FTDebug commands were tested. The LaunchPad board was configured ran on a software very comparable to the one present on FLATSAT, and provided a simple and fast way to verify the software. For tests with the LaunchPad  **ADD RESULTS HERE**
+In the first phase of the software testing campaign tests were performed with the LaunchPad development board, where simple ping, housekeeping and FTDebug commands were tested. The LaunchPad board was configured ran on a software very comparable to the one present on FLATSAT, and provided a simple and fast way to verify the software. Testing the LaunchPad across the memory addree range give above results in the following graph. 
 
 <p align="center">
   <img src="figures/ti_error_graph.png" width = "500">
@@ -166,7 +169,12 @@ The FLATSAT was connected and run for approximatly 30 minutes, which resulted in
   <img src="figures/adb_error_graph.png" width = "500">
 </p>
 
+The FLATSAT was also briefly tested over the entire SRAM range of memory address, but similar to the figure above, house keeping data was only returned in a small range of it. 
 
+
+<p align="center">
+  <img src="figures/large_range_error_plot.png" width = "500">
+</p>
 
 
 
