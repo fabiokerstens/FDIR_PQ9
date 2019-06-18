@@ -189,6 +189,7 @@ def send_packets():
                         no_errors = address_list_update(memory_address, no_errors, json_no_errors)
                     if check is False:
                         data_errors = address_list_update(memory_address, data_errors, json_data_errors)
+                        counter_sent = eps_reset()
 
                 else:
                     print "Packets still missing. Resetting board"
