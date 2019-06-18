@@ -139,15 +139,23 @@ python error_graphs.py
 In the first phase of the software testing campaign tests were performed with the LaunchPad development board, where simple ping, housekeeping and FTDebug commands were tested. The LaunchPad board was configured ran on a software very comparable to the one present on FLATSAT, and provided a simple and fast way to verify the software. For tests with the LaunchPad  **ADD RESULTS HERE**
 
 <p align="center">
-  <img src="figures/error_graph.png">
+  <img src="figures/ti_error_graph.png" width = "500">
 </p>
 
 
 
 ### 4.2 Testing with FLATSAT
-The second phase of the testing campaign consted of tests witht he FLATSAD with the ADB subystem of Delfi-PQ attached. 
+The second phase of the testing campaign consted of tests witht he FLATSAD with the ADB subystem of Delfi-PQ attached. The **client_abd.py** was set up so that the destination of the requests was changed to **"ADB"** and the EPS power commoands were sent to **"Bus4Sw"**. 
+
 <p align="center">
-  <img src="figures/hardware_overview.PNG">
+  <img src="figures/hardware_overview.PNG" width = "650">
+</p>
+
+The FLATSAT was connected and run for approximatly 30 minutes, which resulted in the error graph below. During this run, only one type of error was observed; that flipping a bit resulted in no packets being returned. 
+
+
+<p align="center">
+  <img src="figures/adb_error_graph.png" width = "500">
 </p>
 
 
