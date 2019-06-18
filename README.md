@@ -30,7 +30,7 @@ Testing of the FDIR of the different subsystems on-board of Delfi-PQ can be done
   <img src="figures/flastsat_overview.PNG" width="150">
 </p>
 
-Here, the FLATSAT is used for communication between the spacecraft subsystems and computer for testing and debugging. Communication between FLATSAT and the subsystems is done via the RS-485 serial interface, and between FLATSAT and the computer via USB serial. On the computer one uses the EGSE application programing interface to transmit and receive data to the Delfi-PQ, via the FLATSAT. The errors can be injected in the SRAM manually via the EGSE GUI or automatically via the **client.py** script witten in Python. The software loop running on the **client.py** file is whon in the flowchart below:
+Here, the FLATSAT is used for communication between the spacecraft subsystems and computer for testing and debugging. FLATSAT can acces the common bus for every subsystem and provides small processing of the data. Communication between FLATSAT and the subsystems is done via the RS-485 serial interface, and between FLATSAT and the computer via USB serial. On the computer one uses the EGSE application programing interface to transmit and receive data to the Delfi-PQ, via the FLATSAT. The errors can be injected in the SRAM manually via the EGSE GUI or automatically via the **client.py** script witten in Python. The software loop running on the **client.py** file is whon in the flowchart below:
 
 <p align="center">
   <img src="figures/flowchart.png" width="600">
@@ -42,32 +42,14 @@ After the definition of the memory location to inject the fault in, the **FTDebu
 
 <p align="center">
   <img src="figures/bitwise_operation.PNG" width="600">
-  Figure 1: FTDebug operators. 
 </p>
 
-In the present work, the operator is defined as *and*, with a constant bit mask of 255 (i.e. 0xFFFFFFFF). This command essentially changes the target byte to the value 0xFFFFFFFF and hence injects a fault in the memory. Hereafter, a **housekeeping** request is send to the target subsystem. **CONTINUE**
+In the present work, the operator is defined as *and*, with a constant bit mask of 255 (i.e. 0xFFFFFFFF). This command essentially changes the target byte to the value 0xFFFFFFFF and hence injects a fault in the memory. Hereafter, a **housekeeping** request is send to the target subsystem and the Python scripts verifies if two packets have received (one from FTDebug and one from housekeeping). Packets can get lost during a lockup of the system as a result of the fault injection, or due to errors in the transmission, which are filtered out by the Cyclic Redundancy Check (CRC) build in the PQ9 protocol. When the CRC finds an error, the EGSE application programming interface automatically rejects the packet. Hence, when running the **client_adb.py**, no packet will show up. To counteract this, a housekeeping loop is implemented, called, which transmist a housekeeping request op to three times when no packet is received. For more information about the CRC or PQ9 protocol, the reader is referred to the [PQ9 and CS14 Interface Standard](https://dataverse.nl/dataset.xhtml?persistentId=hdl:10411/3V8RUF).
+
+If two packets have come in after sending the housekeeping request, the error determination code is runned, which is explained in more detail in section 2.4. In case only packet came in (from FTDebug), the system automatically request the housekeeping again. If again nog packets comes in, the pakcets are added to the **missing_packets.json** file and the bus is reset. The **missing_packets.json** file ...............
 
 
-
-
-
-For the real subsystem, the FLATSAT is used instead, with the ADB subsystem. This setup connected is shown in the figure below. 
-
-<p align="center">
-  <img src="figures/hardware_overview.PNG">
-</p>
-
-
-
-
-
-
-A Cyclic Redundancy Check is implemented in the PQ9 communication protocol to account for errors during data transfer. When an error during data transfer occur, the EGSE application programming interface automatically rejects the packet. Hence, when running the **client_adb.py**, no packet will show up. To counteract this, a housekeeping loop is implemented, called, which transmist a housekeeping request op to three times when no packet is received. The flowchart used for this is shown below:
-
-
-
-
-### Error Determination
+### 2.4 Error Determination
 After errors are introduced in the system, it is of interest if these errors indeed propagate through the system or if the FDIR system sucesfully resolves the error. After introducing a SEU in the memory, we distinguish four different errors:
 
 * Corrupted data, corrected by the on-board FDIR (voting etc.). 
@@ -101,9 +83,8 @@ since the data stored in the packets can be highly variable in time, and non-pre
 of the EPS subsystem). 
 
 
-
-## How to Use  
-### Prerequisites
+## 3. How to Use  
+### 3.1 Prerequisites
 To transmit or receive data to or from the Delfi-PQ, the the following items are required:
 
 * Computer running on either Windows or LINUX, with **Python 2.7** installed. 
@@ -111,7 +92,7 @@ To transmit or receive data to or from the Delfi-PQ, the the following items are
 * Micro USB to USB C cable. 
 * Delfi-PQ ADB subsystem with FLATSAT. 
 
-### Software Setup
+### 3.2 Software Setup
 Download this repository and store it on your computer. Connect the FLATSAT to the computer using the micro USB to USB C cable (a green LED should now blink on the board). When using Windows, open Windows PowerShell in administrator mode and run the following command:
 ```
 cd C:\...\FDIR_PQ9\PQ9EGSE
@@ -152,13 +133,20 @@ python error_graphs.py
 ```
 
 
-## Results
+## 4. Results
+For the real subsystem, the FLATSAT is used instead, with the ADB subsystem. This setup connected is shown in the figure below. 
+
+<p align="center">
+  <img src="figures/hardware_overview.PNG">
+</p>
+
+
 
 <p align="center">
   <img src="https://github.com/fabiokerstens/FDIR_PQ9/blob/master/Figures_README/error_graph.png">
 </p>
 
-## Issues Encountered 
+## 5. Issues Encountered 
 When a SEU is sent to some particular memory locations, the microcontroller fully "freezes" and communication with the
 board is no longer possible. This state could only be recovered from by pressing the physical reset button on the board.
 However, this is not practical in reality if one wants to test the full memory spectrum. Therefore, it is recommended
@@ -175,7 +163,7 @@ range 0x2000 0000 to 0x2010 0000.
 
 
 
-## Recommendations
+## 6. Recommendations
 * Currently, the testing software is only compatible with Python 2.7. This version is already qutie old and noweadays Python 3.0 is used for most programming applications. Therefore, to keep the testing software future-proof, it is recommended to make the code compatible for both Python 2.7 and Python 3.
 
 
