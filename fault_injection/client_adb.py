@@ -125,9 +125,9 @@ def send_packets():
 
         if packets:
             # Radomising the memory address and checking it is one that hasn't already been checked
-            memory_address = random.randint(sram_0, sram_1)
+            memory_address = random.randint(sram_0, sram_int+5000)
             while memory_address in missing_packets or memory_address in no_errors or memory_address in data_errors:
-                memory_address = random.randint(sram_0, sram_1)
+                memory_address = random.randint(sram_0, sram_int+5000)
 
             # Using a mask to set all bits in a certain memory address to 1
             pq_class.ftdebug(destination, str(memory_address), "set", "255")
