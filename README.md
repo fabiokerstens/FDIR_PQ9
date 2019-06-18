@@ -153,8 +153,6 @@ This will bring you to the EGSE GUI, as shown in the picture below. In the heade
 
 One can test if a sucesfull connection is obtained by sending a ping to **DEBUG** if connected to the TI MSP342 or to **ADB** if connected to the PQ hardware. In the DataLog on the left side of the screen, a transmitted message should now prompt in yellow, as well as a received message in black. 
 
-Before the code can be run, the file **Defaults.py** must be opened with an editor, and the directories changed to the local directories in which the files are stored, so that the data can be recorded. It can be found in the **PQ_integretion_testing** folder. The data in the .json files is stored between runs of the python files, so to start from scratch the .json files must be opened and emptied. 
-
 Running the Python testing software is done via the **client_adb.py** when connected to the PQ hardware, or **client.py** for testing the code wth TI board. One can open any Python 2.7 editor (e.g. IDLE) to open this file and run it. Additionally, one can also run the script diretly via Windows Powershell or LINUX terminal when using the command:
 
 ```
@@ -162,7 +160,9 @@ cd FDIR_PQ9\PQ_integretion_testing
 python client_adb.py
 ```
 In both the EGSE software and the python files, the memory address must be input in decimal, for which the range is 
-536,870,912 to  537,9191,488. At present **client_adb.py** looks in the range of 536864505 to 536884505, but this can be increased. The **client_adb.py** produces .json files of memory addresses tested. The types of errors occuring at the varying locations can be plotted using the **error_graphs.py** file. 
+536,870,912 to  537,9191,488. At present **client_adb.py** looks in the range of 536864505 to 536884505, but this can be increased. 
+
+All the addresses tested are recorded in .json files, to ensure no data is lost if the python crashes. These are located in the folder address_logs. The types of errors occuring at the varying memory locations can be plotted using the **error_graphs.py** file. This is the files used to produce the results in the following section.  
 
 ```
 python error_graphs.py
