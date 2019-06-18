@@ -30,13 +30,13 @@ Testing of the FDIR of the different subsystems on-board of Delfi-PQ can be done
   <img src="figures/flastsat_overview.PNG" width="150">
 </p>
 
-Here, the FLATSAT is used for communication between the spacecraft subsystems and computer for testing and debugging. FLATSAT can acces the common bus for every subsystem and provides small processing of the data. Communication between FLATSAT and the subsystems is done via the RS-485 serial interface, and between FLATSAT and the computer via USB serial. On the computer one uses the EGSE application programing interface to transmit and receive data to the Delfi-PQ, via the FLATSAT. The errors can be injected in the SRAM manually via the EGSE GUI or automatically via the **client.py** script witten in Python. The software loop running on the **client.py** file is whon in the flowchart below:
+Here, the FLATSAT is used for communication between the spacecraft subsystems and computer for testing and debugging. FLATSAT can acces the common bus for every subsystem and provides small processing of the data. Communication between FLATSAT and the subsystems is done via the RS-485 serial interface, and between FLATSAT and the computer via USB serial. On the computer one uses the EGSE application programing interface to transmit and receive data to the Delfi-PQ, via the FLATSAT. The errors can be injected in the SRAM manually via the EGSE GUI or automatically via the **client_adb.py** script witten in Python. The software loop running on the **client_adb.py** file is whon in the flowchart below:
 
 <p align="center">
   <img src="figures/flowchart.png" width="600">
 </p>
 
-Every iteration of the loop starts with pinging the target subsystem, and checking if a packet is received back. If for some reason no packet is received, the bus is reset and a new ping command is send the the subsystem. Next, the memory adress is defined in the SRAM memory range defined in the previous section. This is a random process, for which the results are **uniformly distributed - WRITE SOMETHING ABOUT THE RANDOM FUNCTION USED**. 
+Every iteration of the loop starts with pinging the target subsystem, and checking if a packet is received back. If for some reason no packet is received, the bus is reset and a new ping command is send the the subsystem. Next, the memory adress is defined in the SRAM memory range defined in the previous section. Pythons *randint()* function is used to generate addresses randomly within a given range. The range used is smaller than the full range of the SRAM as will be discussed later. In addition, a while loop is used to ensure no memory addresses are tested multiple times. 
 
 After the definition of the memory location to inject the fault in, the **FTDebug** function is called. Despite the target memory adress, the function also requires a bit mask and an operator, which can either be *set*, *clear* or *toggle*. These operators essentially perform a bitwise operations with the target byte and the mask byte, as shown in the figure below. 
 
@@ -46,7 +46,12 @@ After the definition of the memory location to inject the fault in, the **FTDebu
 
 In the present work, the operator is defined as *and*, with a constant bit mask of 255 (i.e. 0xFFFFFFFF). This command essentially changes the target byte to the value 0xFFFFFFFF and hence injects a fault in the memory. Hereafter, a **housekeeping** request is send to the target subsystem and the Python scripts verifies if two packets have received (one from FTDebug and one from housekeeping). Packets can get lost during a lockup of the system as a result of the fault injection, or due to errors in the transmission, which are filtered out by the Cyclic Redundancy Check (CRC) build in the PQ9 protocol. When the CRC finds an error, the EGSE application programming interface automatically rejects the packet. Hence, when running the **client_adb.py**, no packet will show up. To counteract this, a housekeeping loop is implemented, called, which transmist a housekeeping request op to three times when no packet is received. For more information about the CRC or PQ9 protocol, the reader is referred to the [PQ9 and CS14 Interface Standard](https://dataverse.nl/dataset.xhtml?persistentId=hdl:10411/3V8RUF).
 
-If two packets have come in after sending the housekeeping request, the error determination code is runned, which is explained in more detail in section 2.4. In case only packet came in (from FTDebug), the system automatically request the housekeeping again. If again nog packets comes in, the pakcets are added to the **missing_packets.json** file and the bus is reset. The **missing_packets.json** file ...............
+If two packets have come in after sending the housekeeping request, the error determination code is runned, which is explained in more detail in section 2.4, and if the data is error free the address is added to the **no_error.json** file. If the system sees there are packets missing, it determines which packets are missing, and then runs housekeeping again. If there are still no packets returned, the address is written to **missing_packets.json**, and the system is reset. These .json files just contain a list which is updated each time a new address is added. This ensures the data is stored if the python code crashes or is restarted, and allows the data to be easily called to a python script for plotting as follows:
+```
+json_no_errors = r"address_logs/no_errors.json".replace('\\', '/')
+no_errors = json.load(open(json_no_errors.replace('\\', '/')))
+```
+There is also a **data_errors.json** file which records the address at which a housekeeping packet is returned but the packet has errors in it. These errors are not produced by the FLATSAT setup, but the option is still included for compatability with other systems. 
 
 
 ### 2.4 Error Determination
@@ -124,7 +129,7 @@ cd FDIR_PQ9\PQ_integretion_testing
 python client_adb.py
 ```
 In both the EGSE software and the python files, the memory address must be input in decimal, for which the range is 
-536,870,912 to  537,9191,488. At present **client_adb.py** looks in the range of 536864505 to 536884505, but this can be increased. 
+536,870,912 to  537,9191,488. At present **client_adb.py** looks in the range of 536,870,912 to 536,974,505, but this can be increased, by changing the *randint()* ranges on lines 133 and 136.  
 
 All the addresses tested are recorded in .json files, to ensure no data is lost if the python crashes. These are located in the folder address_logs. The types of errors occuring at the varying memory locations can be plotted using the **error_graphs.py** file. This is the files used to produce the results in the following section.  
 
