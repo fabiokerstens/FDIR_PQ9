@@ -1,5 +1,14 @@
 # Delfi-PQ Fault Injection Software
 
+* [1. Purpose](#1-purpose)
+* [2. Repoistory Overview](#2-repository-overview)
+* [3. Design](#3-design)
+* [4. How to use](#4-how-to-use)
+* [5. Results](#5-results)
+* [6. Issues Encountered](#6-issues-encountered)
+* [7.Recommendations](#7-recommendations)
+
+
 ## 1. Purpose
 Delft University of Technology is currently developing the [Delfi-PQ](https://www.tudelft.nl/lr/subsites/delfi-space/delfi-pq/), a 3U PocketCube spacecraft, expected to launch in 2019. Throughout its mission, Delfi-PQ will be in a severe radiation environment in low Earth orbit, which could potentially harm the spacecraft electronics. The radiation effect focused on in the present work is the Single Event Upset (SEU), which origins from ionizing particles interacting with the spacecraft electronics. The SEU is a soft error (recoverable) with unpredictable consequences. One of the consequences of SEUs are changes in memory locations, which could result in retrieving incorrect housekeeping data from the spacecraft. 
 
