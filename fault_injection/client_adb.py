@@ -75,8 +75,7 @@ def address_list_update(memory_address, address_list, address_file):
 
     return address_list
 
-
-# Send house keeping command to board
+# --> Send house keeping command to board
 def house_keeping(destination, counter_sent):
     pq_class.housekeeping(destination)
     print(pq_class.status)
@@ -85,10 +84,8 @@ def house_keeping(destination, counter_sent):
 
     return counter_sent
 
-
 # -->  Main function to transmit packets to the LaunchPad
 def send_packets():
-
     # --->>> Initial values and constants
     destination = "ADB"         # Works with either "DEBUG" or "ADB"
     global working
@@ -116,7 +113,6 @@ def send_packets():
         no_errors = json.load(open(json_no_errors.replace('\\', '/')))
     except:
         no_errors = []          # Memory addresses where flipped bit causes no errors
-
 
     # --->>> Initialising loop which generates and records data.
     while working:
@@ -224,12 +220,9 @@ def send_packets():
                                                              json_missing_ft_packets)
                     counter_sent = eps_reset()
 
-
         # If ping not good, restart bus
         else:
             counter_sent = eps_reset()
-
-
 
 # =================================
 # ------------ Inputs -------------
@@ -243,24 +236,21 @@ working = True              # Initialise the code as working
 
 sram_0 = int("0x20000000", 16)          # SRAM memory address region lower
 sram_1 = int("0x20100000", 16)          # SRAM memory address region upper
-sram_int = 536874505                    # Memory address given by Nikitas
-
+sram_int = 536874505                    # Memory address where bit flip known to cause lock up
 
 # Define the file directory in which the files are stored. This can be added in manually or via the command window (use sys.argv[1] in this case).
 file_name = 'testing.txt'
 # file_name = sys.argv[1]
 
-
-
-
 # Maximum log period in minutes (time between two samples)
 log_period = 10
 
+# Calling the class to send functions to the board
 pq_class = pqc.pq(tcp_ip, tcp_port, 1, buffer_size, file_name, log_period)
 
+# Initialising the programme
 t = threading.Thread(target=get_packets)
 t.start()
-
 t2 = threading.Thread(target=send_packets)
 t2.start()
 

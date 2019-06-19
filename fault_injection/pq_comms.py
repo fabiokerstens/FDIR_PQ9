@@ -4,15 +4,6 @@ import time
 import signal
 
 class pq:
-    """ Class for communication protocol of the spacecraft bus with the pc. """
-    # Class containing ....
-    # - .s
-    # -
-    # - Connect to the bus using the IP address and serial port.
-    # -
-    # -
-    # -
-
     # Initializer: initial value of all objects in the class.
     def __init__(self, ip, port, timeout, buffer_size, file_name, log_period):
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -73,21 +64,16 @@ class pq:
                 packet = json.loads(self.buf)
                 self.buf = ""
                 packets.append(packet)
-
         return packets
 
     def ping(self, destination):
-        # Instance method to ping the one of the destinations at the spacecraft
-        # bus.
-        # print("Sending")
+        # Instance method to ping the one of the destinations at the spacecraft bus.
         self.status = "Sending ping"
         print "sending ping"
         msg = {}
         msg['_send_'] = 'Ping'
         msg['Destination'] = destination
-        # print('x', msg)
         packet = json.dumps(msg, ensure_ascii=False)
-        # print(packet)
         self.s.send(packet + "\n")
 
     def ftdebug(self, destination, MemAddr, FTOper, Operator):
@@ -100,7 +86,6 @@ class pq:
         msg['FTOper'] = FTOper
         msg['Operator'] = Operator
         packet = json.dumps(msg, ensure_ascii=False)
-        # print(packet)
         self.s.send(packet + "\n")
 
     def reset(self, destination):
@@ -114,14 +99,12 @@ class pq:
         self.s.send(packet + "\n")
 
     def ledje(self, onoff):
-        # Function for the bit flipping
+        # Function for turning the LED on and off
         print("ledje")
         msg = {}
         msg['_send_'] = 'DBGLEDcmd'
-        # all parameters are set except the state
         msg['DBGLED'] = (onoff)
         packet = json.dumps(msg, ensure_ascii=False)
-        print(packet)
         self.s.send(packet + "\n")
 
     def housekeeping(self, destination):
@@ -131,7 +114,6 @@ class pq:
         msg['_send_'] = 'GetTelemetry'
         msg['Destination'] = destination
         packet = json.dumps(msg, ensure_ascii=False)
-        # print(packet)
         self.s.send(packet + "\n")
 
     def eps_bus_sw(self, eps_param, state):
