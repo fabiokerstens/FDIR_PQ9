@@ -194,12 +194,17 @@ To ensure this was main location where addresses resulted in no errors, the FLAT
 
 
 ## 6. Issues Encountered 
-When a SEU is sent to some particular memory locations, the microcontroller fully "freezes" and communication with the
-board is no longer possible. This state could only be recovered from by pressing the physical reset button on the board.
-However, this is not practical in reality if one wants to test the full memory spectrum. Therefore, it is recommended
-to implement a watchdog timer on the board to let it reset by itself if no response is detected. 
+Through out a project, a number of issues were encountered which slowed down progress substantially. 
 
-During the testing phase of the project, many issues were encountered with deploying EGSI from LINUX in a virtualbox environment. This often solved itself by fully shutting down the virtual box and restarting it. 
+* As was mentioned in section 3.5, when the TI LaunchPad freezes, and communication with it is no longer possible, the initial state can only be recovered by physically pressing the reset button on the board. This made testing a large range of data points time consuming for the user, who had to watch the script and reset the board as required. Fortunately the actual FLATSAT was reset-able with software. 
+
+* The code was time consuming to run, it took 30 minutes to generate 175 data points. This was as a large number of *time.sleep()* were built into the programme. These served two purposes, to allow the board time to process and return the packets before the python script called them, and to allow the board to properly reset whilst it was turned off. The *time.sleep()* was set to 10 seconds for the reset, but could definitely be reduced in future versions. 
+
+* Connecting the board to the EGSE software through the LINUX virtualbox environment took a few attempts each time. With either the environment not reconising the USB device, or the EGSE not responding to it and the whole environment having to be restarted. 
+
+* The code initially received from the [PQ_integretion_testing repo](https://github.com/nchronas/PQ_integretion_testing) was not commented, so it took some time to figure out and build upon. 
+
+* The naming convention in the EPS.xml file and the python files took some time to figure out, and in addition there were a number of spelling mistakes which had to be worked around for coding. For instance, the packet returned by the FTDebug command on the FLATSAT returned "Service":"Ackownledgment" as part of its dictionary. Little things like this took time to debug in the python code. 
 
 
 
@@ -210,5 +215,6 @@ For future iterations of the fault injection software, the following items are r
 * **Python 3 compatibility**. Currently the Python fault injection software is only compatible with Python version 2.7. However, Python 3 is becoming the standard more and more, and hence making the functions compatible with this newer version would make the code more future-proof. 
 * **Variable fault injection rate and target memory locations**. Currently the FTDebug fault injection software randomly selects a single location in the memory to change in real time. However, in reality, multiple locations in the memory can be target by a single SEU strike. Therefore, the number of bytes in which faults are injected should also become a random process. This also ties together with making the fault injection rate a non-constant process. In the present work, every time step new faults are injected in the memory and packets retrieved. However, for real space missions, there can be points in time when no SEUs occur, or points in time where were different bytes in the memory are affected (e.g. when the spacecraft travels through the South Atlantic Anomaly). Therefore, the frequency and rate of fault injections should also be modelled with (random) variables for next iterations. 
 * **Longer testing time**. In this work, the longest fault injection test performed was in the order of 30 minutes. However, this is still much lower than the expected orbital period of Delfi-PQ. Therefore, it is recommended to perform longer tests, in the order of multiple orbital periods, to get a better idea of the correct functioning of the FDIR. 
+* **Speed up testing time** As was mentioned in section 6, the amount of *time.sleep()* built into the code meant only 175 data points were collencted over a 30 minute span, which when testing a memory with such a large range of possible addresses is very slow. In order to gather more data points, it would be worthwhile to figure out which of these *time.sleep()* could be reduced or removed entirely
 * **Testing with different subsystems**. In this work, only tests with the ADB subsystems were performed. However, this is one of the many subsystems flown on Delfi-PQ, and tests with other subsystems are therefore also highly recommended to validate correct functioning of the FDIR. Additionally, a full test shall be performed with all subsystems together (whole spacecraft bus) to validate the system working correctly.  
 
