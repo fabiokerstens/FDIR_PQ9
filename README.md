@@ -10,8 +10,8 @@ The repository is made open-source and allows students from all over the world t
 ## 2. Repository Overview
 In addition to the Readme, there are a few main files required to run the software. In the **fault_injection** folder there are two main files:
 
-* **client_ti.py** the Python file to analyze the MSP432P401R LaunchPad.
-* **client_adb.py** the Python file to analyze the FLATSAT ADB.
+* **client_ti.py** the Python file to analyse the MSP432P401R LaunchPad.
+* **client_adb.py** the Python file to analyse the FLATSAT ADB.
 
 And in the **PQ9EGSE** folder there are two main files:
 
@@ -48,28 +48,30 @@ Testing of the FDIR of the different subsystems on-board of Delfi-PQ can be done
   <img src="figures/flastsat_overview.PNG" width="150">
 </p>
 
-Here, the FLATSAT is used for communication between the spacecraft subsystems and computer for testing and debugging. FLATSAT can acces the common bus for every subsystem and provides small processing of the data. Communication between FLATSAT and the subsystems is done via the RS-485 serial interface, and between FLATSAT and the computer via USB serial. On the computer one uses the EGSE application programing interface to transmit and receive data to the Delfi-PQ, via the FLATSAT. The errors can be injected in the SRAM manually via the EGSE GUI or automatically via the **client_adb.py** script witten in Python. The software loop running on the **client_adb.py** file is whon in the flowchart below:
+Here, the FLATSAT is used for communication between the spacecraft subsystems and computer for testing and debugging. FLATSAT can access the common bus for every subsystem and provides a small amount of processing of the data. Communication between FLATSAT and the subsystems is done via the RS-485 serial interface, and between FLATSAT and the computer via USB serial. On the computer one uses the EGSE application programing interface to transmit and receive data to the Delfi-PQ, via the FLATSAT. The errors can be injected in the SRAM manually via the EGSE GUI or automatically via the **client_adb.py** script written in Python. The software loop running on the **client_adb.py** file is shown in the flowchart below:
 
 <p align="center">
   <img src="figures/flowchart.png" width="600">
 </p>
 
-Every iteration of the loop starts with pinging the target subsystem, and checking if a packet is received back. If for some reason no packet is received, the bus is reset and a new ping command is send the the subsystem. Next, the memory adress is defined in the SRAM memory range defined in the previous section. Pythons *randint()* function is used to generate addresses randomly within a given range. The range used is smaller than the full range of the SRAM as will be discussed later. In addition, a while loop is used to ensure no memory addresses are tested multiple times. 
+Every iteration of the loop starts with pinging the target subsystem, and checking if a packet is received back. If for some reason no packet is received, the bus is reset and a new ping command is sent to the the subsystem. Next, the memory address is defined in the SRAM memory range defined in the previous section, and Python's *randint()* function is used to generate addresses randomly within a given range. The range used is smaller than the full range of the SRAM as will be discussed later. In addition, a while loop is used to ensure no memory addresses are tested multiple times. 
 
-After the definition of the memory location to inject the fault in, the *FTDebug* function is called. Despite the target memory adress, the function also requires a bit mask and an operator, which can either be *set*, *clear* or *toggle*. These operators essentially perform a bitwise operations with the target byte and the mask byte, as shown in the figure below. 
+After the definition of the memory location to inject the fault in, the *FTDebug* function is called. Despite the target memory address, the function also requires a bit mask and an operator, which can either be *set*, *clear* or *toggle*. These operators essentially perform bitwise operations with the target byte and the mask byte, as shown in the figure below. 
 
 <p align="center">
   <img src="figures/bitwise_operation.PNG" width="600">
 </p>
 
-In the present work, the operator is defined as *and*, with a constant bit mask of 255 (i.e. 0xFFFFFFFF). This command essentially changes the target byte to the value 0xFFFFFFFF and hence injects a fault in the memory. Hereafter, a housekeeping request is sent to the target subsystem and the Python scripts verifies if two packets have been received (one from FTDebug and one from housekeeping). Packets can get lost during a lockup of the system as a result of the fault injection, or due to errors in the transmission, which are filtered out by the Cyclic Redundancy Check (CRC) build in the PQ9 protocol. When the CRC finds an error in the communicated data, the EGSE application programming interface automatically rejects the packet. Hence, when running the **client_adb.py**, no packet will show up. To counteract this, a housekeeping loop is implemented, which which transmits a housekeeping request up to three times when no packet is received. For more information about the CRC or PQ9 protocol, the reader is referred to the [PQ9 and CS14 Interface Standard](https://dataverse.nl/dataset.xhtml?persistentId=hdl:10411/3V8RUF).
+In the present work, the operator *set* is used, which is defined as *and*, and is paired with a constant bit mask of 255 (i.e. 0xFFFFFFFF). This command changes the target byte to the value 0xFFFFFFFF and hence injects a fault in the memory. Hereafter, a housekeeping request is sent to the target subsystem and the Python scripts verifies if two packets have been received (one from FTDebug and one from housekeeping). Packets can get lost during a lockup of the system as a result of the fault injection, or due to errors in the transmission, which are filtered out by the Cyclic Redundancy Check (CRC) build in the PQ9 protocol. When the CRC finds an error in the communicated data, the EGSE application programming interface automatically rejects the packet. Hence, when running the **client_adb.py**, no packet will show up. To counteract this, a housekeeping loop is implemented, which which transmits a housekeeping request again when no packet is received. For more information about the CRC or PQ9 protocol, the reader is referred to the [PQ9 and CS14 Interface Standard](https://dataverse.nl/dataset.xhtml?persistentId=hdl:10411/3V8RUF).
 
-If two packets have come in after sending the housekeeping request, the error determination code is run, which is explained in more detail in section 3.4, and if the data is error free the address is added to the **no_error.json** file. If the system sees there are packets missing, it determines which packets are missing, and then runs a housekeeping command again. If there are still no packets returned, the address is written to **missing_packets.json**, and the system is reset. These .json files just contain a list which is updated each time a new address is added. This ensures the data is stored if the Python code crashes or is restarted, and allows the data to be easily called to a Python script for plotting as follows:
+If two packets are received after sending the housekeeping request, the data error determination function is used, which is explained in more detail in section 3.4. If the data is error free the address is added to the **no_error.json** file, while if there is an error in the house keeping data the address is added to **data_errors.json**. However, if after re-requesting housekeeping, packets are still not returned the address is written to **missing_packets.json**, and the system is reset.
+ 
+These .json files contain a list which is updated each time a new address is added. This ensures the data is stored if the Python code crashes or is restarted, and allows the data to be easily called to a Python script as a list for plotting as follows:
 ```
 json_no_errors = r"address_logs/no_errors.json".replace('\\', '/')
 no_errors = json.load(open(json_no_errors.replace('\\', '/')))
 ```
-There is also a **data_errors.json** file which records the address at which a housekeeping packet is returned when containing corrupted data. These errors are not produced by the FLATSAT setup, but the option is still included for compatibility with other systems. 
+
 
 
 ### 3.4 Error Determination
@@ -85,7 +87,7 @@ In case of a lock up of the system, no packets are transmitted by the FLATSAT or
   <img src="figures/debug_packet.PNG">
 </p>
 
-The message contains the housekeeping information of the particular subsystem of Delfi-PQ. The length of this message is different for each subsystem, and parameters in the message are often variables (e.g. sensor readout), meaning modelling a reference signal on the computer to check for data corruption is hard to impossible. For the DEBUG housekeeping command, some bytes have a constant value, which is shown in the figure in decimals. 
+The message contains the housekeeping information regarding the particular subsystem of Delfi-PQ. The length of this message is different for each subsystem, and parameters in the message are often variables (e.g. sensor readout), meaning modeling a reference signal on the computer to check for data corruption is near to impossible. For the DEBUG housekeeping command, some bytes have a constant value, which is shown in the figure in decimals. 
 
 The packets returned by invoking an ADB housekeeping request when connected to the FLATSAT are larger, but still contain variable bytes for the *counter* (which counts the number of packets transmitted by the subsystem) and fixed bytes representing *testing 2* (0xcafe) and *testing 4* (0xdeadbeef). The *counter* will be used to identify missing packages, while *testing 2* and *testing 4* will be used to check the data produced by housekeeping is not corrupted as a result of the SEU. While corrupt housekeeping data is not expected to be seen when running the code on the FLATSAT with the ADB, this method was used when it was initially connected to, to ensure the **.xml** file was operating nominally with it. 
 
@@ -113,11 +115,11 @@ java -jar target/PQ9EGSE-0.1-SNAPSHOT-jar-with-dependencies.jar
 ```
 where the dots are to be replaced with the repository directory. When using LINUX, open the terminal and run the following command:
 ```
-cd FDIR_PQ9\PQ9EGSE
+cd ...\FDIR_PQ9\PQ9EGSE
 sudo java -jar target/PQ9EGSE-0.1-SNAPSHOT-jar-with-dependencies.jar
 ```
 
-Both cases will load the EGSE application programing interface. This can now be accessed by going to the internet browser and typing in the adres bar:
+Both cases will load the EGSE application programing interface. This can now be accessed by going to an internet browser and typing in the address bar:
 ```
 localhost:8080
 ```
@@ -130,10 +132,10 @@ This will bring you to the EGSE GUI, as shown in the picture below. In the heade
 
 One can test if a successful connection is obtained by sending a ping request to DEBUG if connected to the LaunchPad or to ADB when connected to the Delfi-PQ hardware via FLATSAT. In the DataLog on the left side of the screen, a transmitted message should now prompt in yellow, as well as a received message in black. In case no message is received, or the command is not recognized by the EGSE software, the user is advised to shut down the EGSE application programming interface and re-deploy it with the steps described in this section. 
 
-Running the Python testing software is done via the **client_adb.py** when connected to the Delfi-PQ ADB subsystem via FLATSAT, or **client_ti.py** for testing the code wth LaunchPad. One can open any Python 2.7 editor (e.g. IDLE) to open this file and run it. Additionally, one can also run the script directly via Windows Powershell or LINUX terminal when using the command:
+Running the Python testing software is done via the **client_adb.py** when connected to the Delfi-PQ ADB subsystem via FLATSAT, or **client_ti.py** for testing the code with LaunchPad. One can open any Python 2.7 editor (e.g. IDLE) to open this file and run it. Additionally, one can also run the script directly via Windows Powershell or LINUX terminal when using the command:
 
 ```
-cd FDIR_PQ9\fault_injection
+cd ...\FDIR_PQ9\fault_injection
 python client_adb.py
 ```
 In both the EGSE GUI and the Python files, the memory address must be input in decimal, for which the range is 
@@ -148,13 +150,13 @@ This will provide the user with the plotting data as shown in section 5 of this 
 ## 5. Results
 
 ### 5.1 Testing with LaunchPad
-In the first phase of the software testing campaign tests were performed with the LaunchPad development board, where simple ping, housekeeping and FTDebug commands were tested. The LaunchPad board was configured to run on a software very comparable to the one present on FLATSAT, and provided a simple and fast way to verify the software. Testing the LaunchPad across the memory adres range give above results in the following graph. 
+In the first phase of the software testing campaign tests were performed with the LaunchPad development board, where simple ping, housekeeping and FTDebug commands were tested. The LaunchPad board was configured to run on a software very comparable to the one present on FLATSAT, and provided a simple and fast way to verify the software. Testing the LaunchPad across the memory address range given above results in the following graph:
 
 <p align="center">
   <img src="figures/ti_error_graph.png" width = "500">
 </p>
 
-An attempt was made to compare the obtained data with [previous tests](https://github.com/FlyOHolic/Delfi-PQ_FDIR_Evaluator/blob/master/images/Results.png) with the LauchPad. However, it was quickly found out that the memory ranged used in the reference work (536,870,912 to 536,879,000) was much smaller and located near the lower bound of the full RAM memory range of 536,870,912 to 537,919,488 (i.e. 0x20000000 to 0x20100000) targeted in the present work. Similar to the previous work, most of the packets in this small region of comparison show now error. However, in the present work, actually no error is detected in these packages, whereas previous work does clearly show several lock ups of the system (missing packets). It is expected that these lock ups will also show up using our simulation, however it is likely no failures have been injected in these bits. Since the failure injection is a random, uniformly distributed process, and our memory range is much larger, the chance introducing an error in exactly the same bits as in the reference work is very small, and will only occur after the failure detection software has run for a sufficient time. 
+An attempt was made to compare the obtained data with [previous tests](https://github.com/FlyOHolic/Delfi-PQ_FDIR_Evaluator/blob/master/images/Results.png) with the LauchPad. However, it was quickly found out that the memory ranged used in the reference work (536,870,912 to 536,879,000) was much smaller and located near the lower bound of the full RAM memory range of 536,870,912 to 537,919,488 (i.e. 0x20000000 to 0x20100000) targeted in the present work. Similar to the previous work, most of the packets in this small region of comparison show no error. However, in the present work, actually no error is detected in these packages, whereas previous work does clearly show several lock ups of the system (missing packets). It is expected that these lock ups will also show up using our simulation, however it is likely no failures have been injected in these bits. Since the failure injection is a random, uniformly distributed process, and our memory range is much larger, the chance introducing an error in exactly the same bits as in the reference work is very small, and will only occur after the failure detection software has run for a sufficient time. 
 
 
 ### 5.2 Testing with FLATSAT
