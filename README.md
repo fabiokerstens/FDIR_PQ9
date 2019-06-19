@@ -177,14 +177,14 @@ The second phase of the testing campaign consisted of tests with he FLATSAT with
   <img src="figures/hardware_overview.PNG" width = "650">
 </p>
 
-The FLATSAT was connected and run for approximately 30 minutes, which resulted in the error graph below. During this run, only one type of error was observed; that flipping a bit resulted in no packets being returned. 
+The FLATSAT was connected and run for approximately 30 minutes, which resulted in the error graph below. During this run, the memory address range described in section 4.2, and as expected, only one type of error was observed; that flipping a bit resulted in no packets being returned. Similar to what was seen with the LaunchPad, only a small portion of the SRAM memory range returned no errors when a bit was flipped. Similar to the LaunchPad, this range consisted of memory addresses mostly between 5.3687e8 and 5.3694e8. 
 
 
 <p align="center">
   <img src="figures/adb_error_graph.png" width = "500">
 </p>
 
-The FLATSAT was also briefly tested over the entire SRAM range of memory address, but similar to the figure above, housekeeping data was only returned in a small range of it. 
+To ensure this was main location where addresses resulted in no errors, the FLATSAT was briefly tested over the entire SRAM range of memory address, as is shown in the figure below. As was expected, in most of the SRAM bit flips resulted in missing packets. 
 
 
 <p align="center">
