@@ -36,12 +36,14 @@ Other files of note in the **fault_injection** folder are:
 Lastly, the folder **figures** contains all figures used in this documentation. 
 
 ## 3. Design
-### 3.1 Literature Overiew
+### 3.1 Overview of Previous Work
 In the past, several attempts were already made on developing a FDIR validation simulation, which have been used throughout this work as a reference. Firstly, [Delfi-PQ_FDIR](https://github.com/JochimM/Delfi-PQ_FDIR), uses an Arduino to simulate the spacecraft. Errors are only injected in the SRAM memory and communication is done via standard USB serial. Error checking is done by asking housekeeping data, which contains the names of the authors as well as the Borwein pi approximation. Since both housekeeping parameters are fixed and can be well modelled, the authors can easily check for data corruption as a result of the faults injected. Their simulations outputs a memory map of the memory location and specific bits in which *soft errors* (corrupted housekeeping data) and *hard errors* (Arduino crash) occur. 
 
 Another attempt was made in the [Delfi-PQ_FDIR_Evaluator](https://github.com/FlyOHolic/Delfi-PQ_FDIR_Evaluator), where the authors used two Texas Instruments MSP432P401R LaunchPad development boards, which is identical to the development board used in the present work. They use Python to inject error in the SRAM zone of the memory (0x20000000-0x20100000). Their board is programmed to continuously transmit the message "Hello World", which can have a different output if errors are introduced in the board. They distinguish four types of errors of which the two most relevant are: (1) *lockup* in which the boards stops responding and (2) *data corruption* in which the outputted "Hello World" string is corrupted.
 
-### 3.2 Memory Overview
+In this work, the Electrical Ground Support Equipment (EGSE) for Delfi-PQ is used to inject faults in the memory. EGSE is stored in the folder **PQ9EGSE** which is cloned from [this repository](https://github.com/nchronas/PQ9EGSE). Next to that the Python analysis and injection software files written in this work build upon the functions and structures obtained from [this repository](https://github.com/nchronas/PQ_integretion_testing) related to the integration testing of Delfi-PQ.  
+
+### 3.2 Internal Memory
 To simulate created errors due to SEUs the approach used in this work injects failures in the memory of the Delfi-PQ. The on-board memory is modelled with the FLATSAT interface or the MSP432P401R LaunchPad, which both have the same microcontroller. The memory map for the particular microcontroller used is shown in the figure below (source: [Texas Instruments](http://www.ti.com/lit/ds/symlink/msp432p401r.pdf)). 
 
 <p align="center">
